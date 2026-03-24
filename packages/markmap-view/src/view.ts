@@ -195,6 +195,8 @@ export class Markmap {
         .join('.');
       color(item); // preload colors
 
+      console.log(color(item), item);
+
       const isFoldRecursively = item.payload?.fold === 2;
       if (isFoldRecursively) {
         foldRecursively += 1;
@@ -404,6 +406,46 @@ export class Markmap {
       .attr('stroke-width', 0);
     const mmLineMerge = mmLine.merge(mmLineEnter);
 
+    const observer = this._observer;
+    const mmFo = mmGMerge
+      .selectAll<
+        SVGForeignObjectElement,
+        INode
+      >(childSelector<SVGForeignObjectElement>('foreignObject'))
+      .data(
+        (d) => [d],
+        (d) => d.state.key,
+      );
+    const mmFoEnter = mmFo
+      .enter()
+      .append('foreignObject')
+      .attr('class', 'markmap-foreign')
+      .attr('x', paddingX)
+      .attr('y', 0)
+      .style('opacity', 0)
+      .on('mousedown', stopPropagation)
+      .on('dblclick', stopPropagation);
+    mmFoEnter
+      // The outer `<div>` with a width of `maxWidth`
+      .append<HTMLDivElement>('xhtml:div')
+      .attr('style', (d) => '--node-color:' + color(d))
+      // The inner `<div>` with `display: inline-block` to get the proper width
+      .append<HTMLDivElement>('xhtml:div')
+      .html((d) => d.content)
+      .attr('xmlns', 'http://www.w3.org/1999/xhtml');
+    mmFoEnter.each(function () {
+      const el = this.firstChild?.firstChild as Element;
+      observer.observe(el);
+    });
+    const mmFoExit = mmGExit.selectAll<SVGForeignObjectElement, INode>(
+      childSelector<SVGForeignObjectElement>('foreignObject'),
+    );
+    mmFoExit.each(function () {
+      const el = this.firstChild?.firstChild as Element;
+      observer.unobserve(el);
+    });
+    const mmFoMerge = mmFoEnter.merge(mmFo);
+
     // Circle to link to children of the node
     const mmCircle = mmGMerge
       .selectAll<
@@ -429,45 +471,6 @@ export class Markmap {
           ? color(d)
           : 'var(--markmap-circle-open-bg)',
       );
-
-    const observer = this._observer;
-    const mmFo = mmGMerge
-      .selectAll<
-        SVGForeignObjectElement,
-        INode
-      >(childSelector<SVGForeignObjectElement>('foreignObject'))
-      .data(
-        (d) => [d],
-        (d) => d.state.key,
-      );
-    const mmFoEnter = mmFo
-      .enter()
-      .append('foreignObject')
-      .attr('class', 'markmap-foreign')
-      .attr('x', paddingX)
-      .attr('y', 0)
-      .style('opacity', 0)
-      .on('mousedown', stopPropagation)
-      .on('dblclick', stopPropagation);
-    mmFoEnter
-      // The outer `<div>` with a width of `maxWidth`
-      .append<HTMLDivElement>('xhtml:div')
-      // The inner `<div>` with `display: inline-block` to get the proper width
-      .append<HTMLDivElement>('xhtml:div')
-      .html((d) => d.content)
-      .attr('xmlns', 'http://www.w3.org/1999/xhtml');
-    mmFoEnter.each(function () {
-      const el = this.firstChild?.firstChild as Element;
-      observer.observe(el);
-    });
-    const mmFoExit = mmGExit.selectAll<SVGForeignObjectElement, INode>(
-      childSelector<SVGForeignObjectElement>('foreignObject'),
-    );
-    mmFoExit.each(function () {
-      const el = this.firstChild?.firstChild as Element;
-      observer.unobserve(el);
-    });
-    const mmFoMerge = mmFoEnter.merge(mmFo);
 
     // Update the links
     const links = nodes.flatMap((node) =>
@@ -561,7 +564,7 @@ export class Markmap {
     mmCircleMerge
       .attr('cx', (d) => d.state.rect.width)
       .attr('cy', (d) => d.state.rect.height + lineWidth(d) / 2);
-    this.transition(mmCircleMerge).attr('r', 6).attr('stroke-width', '1.5');
+    this.transition(mmCircleMerge).attr('r', 5).attr('stroke-width', '1');
 
     this.transition(mmFoExit).style('opacity', 0);
     mmFoMerge
