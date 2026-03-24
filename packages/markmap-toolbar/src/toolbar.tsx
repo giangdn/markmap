@@ -88,20 +88,42 @@ export class Toolbar {
     this.register({
       id: 'zoomIn',
       title: 'Zoom in',
-      content: Toolbar.icon('M9 5v4h-4v2h4v4h2v-4h4v-2h-4v-4z'),
+      content: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 0 1 0 2h-6v6a1 1 0 0 1 -2 0v-6h-6a1 1 0 0 1 0 -2h6v-6a1 1 0 0 1 1 -1" />
+        </svg>
+      ),
       onClick: this.getHandler((mm) => mm.rescale(1.25)),
     });
     this.register({
       id: 'zoomOut',
       title: 'Zoom out',
-      content: Toolbar.icon('M5 9h10v2h-10z'),
+      content: (
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M5 12l14 0" />
+        </svg>
+      ),
       onClick: this.getHandler((mm) => mm.rescale(0.8)),
     });
     this.register({
       id: 'fit',
       title: 'Fit window size',
-      content: Toolbar.icon(
-        'M4 7h2v-2h2v4h-4zM4 13h2v2h2v-4h-4zM16 7h-2v-2h-2v4h4zM16 13h-2v2h-2v-4h4z',
+      content: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M19 4h-14a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3zm-10 3a1 1 0 0 1 .117 1.993l-.117 .007h-2v2a1 1 0 0 1 -.883 .993l-.117 .007a1 1 0 0 1 -.993 -.883l-.007 -.117v-3a1 1 0 0 1 .883 -.993l.117 -.007h3zm9 5a1 1 0 0 1 .993 .883l.007 .117v3a1 1 0 0 1 -.883 .993l-.117 .007h-3a1 1 0 0 1 -.117 -1.993l.117 -.007h2v-2a1 1 0 0 1 .883 -.993l.117 -.007z" />
+        </svg>
       ),
       onClick: this.getHandler((mm) => mm.fit()),
     });
