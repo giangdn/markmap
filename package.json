@@ -5,6 +5,12 @@
   "engines": {
     "node": ">=22"
   },
+  "dependencies": {
+    "highlight.js": "^11.9.0",
+    "@vscode/markdown-it-katex": "^1.1.0",
+    "katex": "^0.16.9",
+    "prismjs": "^1.29.0"
+  },
   "exports": {
     ".": {
       "import": "./packages/markmap-view/dist/index.mjs",
@@ -36,7 +42,17 @@
       "import": "./packages/markmap-html-parser/dist/index.mjs",
       "require": "./packages/markmap-html-parser/dist/index.js",
       "types": "./packages/markmap-html-parser/dist/index.d.ts"
-    }
+    },
+    "./hljs": {
+      "import": "highlight.js",
+      "require": "highlight.js"
+    },
+    "./katex": {
+      "import": "katex",
+      "require": "katex"
+    },
+    "./katex/style.css": "katex/dist/katex.min.css",
+    "./hljs/style.css": "highlight.js/styles/default.css"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",

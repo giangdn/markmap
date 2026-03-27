@@ -1,4 +1,4 @@
-import { UrlBuilder } from "markmap-common";
+import { UrlBuilder, loadCSS, loadJS } from "markmap-common";
 import { buildTree } from "markmap-html-parser";
 import MarkdownIt from "markdown-it";
 import md_ins from "markdown-it-ins";
@@ -120,13 +120,91 @@ class Transformer {
     return this.getAssets(keys);
   }
 }
+const pluginAssets = {
+  katex: {
+    styles: [
+      {
+        type: "stylesheet",
+        data: {
+          href: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+        }
+      }
+    ],
+    scripts: [
+      {
+        type: "script",
+        data: {
+          src: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+        }
+      }
+    ]
+  },
+  hljs: {
+    styles: [
+      {
+        type: "stylesheet",
+        data: {
+          href: "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/default.min.css"
+        }
+      }
+    ],
+    scripts: [
+      {
+        type: "script",
+        data: {
+          src: "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/core.min.js"
+        }
+      }
+    ]
+  },
+  prism: {
+    styles: [
+      {
+        type: "stylesheet",
+        data: {
+          href: "https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css"
+        }
+      }
+    ],
+    scripts: [
+      {
+        type: "script",
+        data: {
+          src: "https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"
+        }
+      }
+    ]
+  }
+};
+async function loadPlugins(plugins2 = ["katex", "hljs"]) {
+  const allStyles = [];
+  const allScripts = [];
+  for (const plugin of plugins2) {
+    const assets = pluginAssets[plugin];
+    if (assets) {
+      allStyles.push(...assets.styles);
+      allScripts.push(...assets.scripts);
+    }
+  }
+  await loadCSS(allStyles);
+  await loadJS(allScripts);
+  const loaded = {};
+  if (typeof window !== "undefined") {
+    loaded.katex = !!window.katex;
+    loaded.hljs = !!window.hljs;
+    loaded.Prism = !!window.Prism;
+  }
+  return loaded;
+}
 const transformerVersions = {
   "markmap-lib": "0.18.12"
 };
 export {
   Transformer,
   builtInPlugins,
+  loadPlugins,
   patchCSSItem,
   patchJSItem,
+  pluginAssets,
   transformerVersions
 };

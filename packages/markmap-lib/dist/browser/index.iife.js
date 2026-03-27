@@ -287,6 +287,7 @@
     );
   });
   const jsCache = {};
+  const cssCache = {};
   async function loadJSItem(item, context) {
     var _a2;
     const src = item.type === "script" && ((_a2 = item.data) == null ? void 0 : _a2.src) || "";
@@ -316,6 +317,35 @@
     }
     await item.loaded;
   }
+  async function loadCSSItem(item) {
+    const url = item.type === "stylesheet" && item.data.href || "";
+    item.loaded || (item.loaded = cssCache[url]);
+    if (!item.loaded) {
+      const deferred = defer();
+      item.loaded = deferred.promise;
+      if (url) cssCache[url] = item.loaded;
+      if (item.type === "style") {
+        document.head.append(
+          hm("style", {
+            textContent: item.data
+          })
+        );
+        deferred.resolve();
+      } else if (url) {
+        document.head.append(
+          hm("link", {
+            rel: "stylesheet",
+            ...item.data
+          })
+        );
+        fetch(url).then((res) => {
+          if (res.ok) return res.text();
+          throw res;
+        }).then(() => deferred.resolve(), deferred.reject);
+      }
+    }
+    await item.loaded;
+  }
   async function loadJS(items, context) {
     items.forEach((item) => {
       var _a2;
@@ -330,6 +360,9 @@
     for (const item of items) {
       await loadJSItem(item, context);
     }
+  }
+  async function loadCSS(items) {
+    await Promise.all(items.map((item) => loadCSSItem(item)));
   }
   function buildJSItem(path) {
     return {
@@ -18690,13 +18723,91 @@ ${end2.comment}` : end2.comment;
       return this.getAssets(keys);
     }
   }
+  const pluginAssets = {
+    katex: {
+      styles: [
+        {
+          type: "stylesheet",
+          data: {
+            href: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+          }
+        }
+      ],
+      scripts: [
+        {
+          type: "script",
+          data: {
+            src: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+          }
+        }
+      ]
+    },
+    hljs: {
+      styles: [
+        {
+          type: "stylesheet",
+          data: {
+            href: "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/default.min.css"
+          }
+        }
+      ],
+      scripts: [
+        {
+          type: "script",
+          data: {
+            src: "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/core.min.js"
+          }
+        }
+      ]
+    },
+    prism: {
+      styles: [
+        {
+          type: "stylesheet",
+          data: {
+            href: "https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css"
+          }
+        }
+      ],
+      scripts: [
+        {
+          type: "script",
+          data: {
+            src: "https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"
+          }
+        }
+      ]
+    }
+  };
+  async function loadPlugins(plugins2 = ["katex", "hljs"]) {
+    const allStyles = [];
+    const allScripts = [];
+    for (const plugin2 of plugins2) {
+      const assets = pluginAssets[plugin2];
+      if (assets) {
+        allStyles.push(...assets.styles);
+        allScripts.push(...assets.scripts);
+      }
+    }
+    await loadCSS(allStyles);
+    await loadJS(allScripts);
+    const loaded = {};
+    if (typeof window !== "undefined") {
+      loaded.katex = !!window.katex;
+      loaded.hljs = !!window.hljs;
+      loaded.Prism = !!window.Prism;
+    }
+    return loaded;
+  }
   const transformerVersions = {
     "markmap-lib": "0.18.12"
   };
   exports.Transformer = Transformer;
   exports.builtInPlugins = builtInPlugins;
+  exports.loadPlugins = loadPlugins;
   exports.patchCSSItem = patchCSSItem;
   exports.patchJSItem = patchJSItem;
+  exports.pluginAssets = pluginAssets;
   exports.transformerVersions = transformerVersions;
   Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 })(this.markmap = this.markmap || {}, window.katex);
