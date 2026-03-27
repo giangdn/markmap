@@ -1,4 +1,4 @@
-import { loadCSS, loadJS, JSItem, CSSItem } from '../../markmap-common';
+import { loadCSS, loadJS, JSItem, CSSItem } from 'markmap-common';
 
 // Define all plugin assets
 const pluginAssets = {
