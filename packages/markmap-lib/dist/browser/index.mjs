@@ -1,4 +1,4 @@
-import { Hook, buildCSSItem, buildJSItem, noop, loadJS, wrapFunction, UrlBuilder, loadCSS } from "markmap-common";
+import { Hook, buildCSSItem, buildJSItem, loadJS, noop, wrapFunction, UrlBuilder, loadCSS } from "markmap-common";
 import { buildTree } from "markmap-html-parser";
 import MarkdownIt from "markdown-it";
 import md_ins from "markdown-it-ins";
@@ -207,21 +207,21 @@ function addDefaultVersions(paths, name2, version) {
     return path;
   });
 }
-var define_define_KATEX_RESOURCES_default = ["katex@0.16.18/dist/fonts/KaTeX_AMS-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Caligraphic-Bold.woff2", "katex@0.16.18/dist/fonts/KaTeX_Caligraphic-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Fraktur-Bold.woff2", "katex@0.16.18/dist/fonts/KaTeX_Fraktur-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Main-Bold.woff2", "katex@0.16.18/dist/fonts/KaTeX_Main-BoldItalic.woff2", "katex@0.16.18/dist/fonts/KaTeX_Main-Italic.woff2", "katex@0.16.18/dist/fonts/KaTeX_Main-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Math-BoldItalic.woff2", "katex@0.16.18/dist/fonts/KaTeX_Math-Italic.woff2", "katex@0.16.18/dist/fonts/KaTeX_SansSerif-Bold.woff2", "katex@0.16.18/dist/fonts/KaTeX_SansSerif-Italic.woff2", "katex@0.16.18/dist/fonts/KaTeX_SansSerif-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Script-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Size1-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Size2-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Size3-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Size4-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Typewriter-Regular.woff2"];
+var define_define_KATEX_RESOURCES_default = ["katex@0.16.43/dist/fonts/KaTeX_AMS-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Caligraphic-Bold.woff2", "katex@0.16.43/dist/fonts/KaTeX_Caligraphic-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Fraktur-Bold.woff2", "katex@0.16.43/dist/fonts/KaTeX_Fraktur-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Main-Bold.woff2", "katex@0.16.43/dist/fonts/KaTeX_Main-BoldItalic.woff2", "katex@0.16.43/dist/fonts/KaTeX_Main-Italic.woff2", "katex@0.16.43/dist/fonts/KaTeX_Main-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Math-BoldItalic.woff2", "katex@0.16.43/dist/fonts/KaTeX_Math-Italic.woff2", "katex@0.16.43/dist/fonts/KaTeX_SansSerif-Bold.woff2", "katex@0.16.43/dist/fonts/KaTeX_SansSerif-Italic.woff2", "katex@0.16.43/dist/fonts/KaTeX_SansSerif-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Script-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Size1-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Size2-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Size3-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Size4-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Typewriter-Regular.woff2"];
 const name$2 = "katex";
 const preloadScripts = [
-  `katex@${"0.16.18"}/dist/katex.min.js`
+  `katex@${"0.16.43"}/dist/katex.min.js`
 ].map((path) => buildJSItem(path));
 const webfontloader = buildJSItem(
   `webfontloader@${"1.6.28"}/webfontloader.js`
 );
 webfontloader.data.defer = true;
-const styles = [`katex@${"0.16.18"}/dist/katex.min.css`].map(
+const styles = [`katex@${"0.16.43"}/dist/katex.min.css`].map(
   (path) => buildCSSItem(path)
 );
 const config = {
   versions: {
-    katex: "0.16.18",
+    katex: "0.16.43",
     webfontloader: "1.6.28"
   },
   preloadScripts,
@@ -494,7 +494,7 @@ const pluginAssets = {
       {
         type: "stylesheet",
         data: {
-          href: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+          href: "https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/katex.min.css"
         }
       }
     ],
@@ -502,7 +502,7 @@ const pluginAssets = {
       {
         type: "script",
         data: {
-          src: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+          src: "https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/katex.min.js"
         }
       }
     ]

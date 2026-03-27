@@ -1254,7 +1254,7 @@
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     String.prototype.codePointAt != null ? (str, index2) => str.codePointAt(index2) : (
       // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-      (c, index2) => (c.charCodeAt(index2) & 64512) === 55296 ? (c.charCodeAt(index2) - 55296) * 1024 + c.charCodeAt(index2 + 1) - 56320 + 65536 : c.charCodeAt(index2)
+      ((c, index2) => (c.charCodeAt(index2) & 64512) === 55296 ? (c.charCodeAt(index2) - 55296) * 1024 + c.charCodeAt(index2 + 1) - 56320 + 65536 : c.charCodeAt(index2))
     )
   );
   function encodeXML(str) {
@@ -1721,7 +1721,7 @@
   }
   function find$2(test, nodes, recurse, limit) {
     const result = [];
-    const nodeStack = [nodes];
+    const nodeStack = [Array.isArray(nodes) ? nodes : [nodes]];
     const indexStack = [0];
     for (; ; ) {
       if (indexStack[0] >= nodeStack[0].length) {
@@ -1748,25 +1748,26 @@
     return nodes.find(test);
   }
   function findOne(test, nodes, recurse = true) {
-    let elem = null;
-    for (let i = 0; i < nodes.length && !elem; i++) {
-      const node = nodes[i];
-      if (!isTag(node)) {
-        continue;
-      } else if (test(node)) {
-        elem = node;
-      } else if (recurse && node.children.length > 0) {
-        elem = findOne(test, node.children, true);
+    const searchedNodes = Array.isArray(nodes) ? nodes : [nodes];
+    for (let i = 0; i < searchedNodes.length; i++) {
+      const node = searchedNodes[i];
+      if (isTag(node) && test(node)) {
+        return node;
+      }
+      if (recurse && hasChildren(node) && node.children.length > 0) {
+        const found = findOne(test, node.children, true);
+        if (found)
+          return found;
       }
     }
-    return elem;
+    return null;
   }
   function existsOne(test, nodes) {
-    return nodes.some((checked) => isTag(checked) && (test(checked) || existsOne(test, checked.children)));
+    return (Array.isArray(nodes) ? nodes : [nodes]).some((node) => isTag(node) && test(node) || hasChildren(node) && existsOne(test, node.children));
   }
   function findAll(test, nodes) {
     const result = [];
-    const nodeStack = [nodes];
+    const nodeStack = [Array.isArray(nodes) ? nodes : [nodes]];
     const indexStack = [0];
     for (; ; ) {
       if (indexStack[0] >= nodeStack[0].length) {
@@ -1778,11 +1779,9 @@
         continue;
       }
       const elem = nodeStack[0][indexStack[0]++];
-      if (!isTag(elem))
-        continue;
-      if (test(elem))
+      if (isTag(elem) && test(elem))
         result.push(elem);
-      if (elem.children.length > 0) {
+      if (hasChildren(elem) && elem.children.length > 0) {
         indexStack.unshift(0);
         nodeStack.unshift(elem.children);
       }
@@ -1841,6 +1840,9 @@
   }
   function getElementsByTagName(tagName, nodes, recurse = true, limit = Infinity) {
     return filter$2(Checks["tag_name"](tagName), nodes, recurse, limit);
+  }
+  function getElementsByClassName(className, nodes, recurse = true, limit = Infinity) {
+    return filter$2(getAttribCheck("class", className), nodes, recurse, limit);
   }
   function getElementsByTagType(type, nodes, recurse = true, limit = Infinity) {
     return filter$2(Checks["tag_type"](type), nodes, recurse, limit);
@@ -2061,6 +2063,7 @@
     getChildren,
     getElementById,
     getElements,
+    getElementsByClassName,
     getElementsByTagName,
     getElementsByTagType,
     getFeed,
@@ -9732,7 +9735,13 @@
     if (!link2) return false;
     let url = link2.url;
     if (url.length <= proto.length) return false;
-    url = url.replace(/\*+$/, "");
+    let urlEnd = url.length;
+    while (urlEnd > 0 && url.charCodeAt(urlEnd - 1) === 42) {
+      urlEnd--;
+    }
+    if (urlEnd !== url.length) {
+      url = url.slice(0, urlEnd);
+    }
     const fullUrl = state.md.normalizeLink(url);
     if (!state.md.validateLink(fullUrl)) return false;
     if (!silent) {
@@ -12194,8 +12203,7 @@
     return {
       onAnchor: (source) => {
         aliasObjects.push(source);
-        if (!prevAnchors)
-          prevAnchors = anchorNames(doc);
+        prevAnchors ?? (prevAnchors = anchorNames(doc));
         const anchor = findNewAnchor(prefix, prevAnchors);
         prevAnchors.add(anchor);
         return anchor;
@@ -12327,23 +12335,35 @@
      * Resolve the value of this alias within `doc`, finding the last
      * instance of the `source` anchor before this node.
      */
-    resolve(doc) {
+    resolve(doc, ctx) {
+      let nodes;
+      if (ctx == null ? void 0 : ctx.aliasResolveCache) {
+        nodes = ctx.aliasResolveCache;
+      } else {
+        nodes = [];
+        visit(doc, {
+          Node: (_key, node) => {
+            if (isAlias(node) || hasAnchor(node))
+              nodes.push(node);
+          }
+        });
+        if (ctx)
+          ctx.aliasResolveCache = nodes;
+      }
       let found = void 0;
-      visit(doc, {
-        Node: (_key, node) => {
-          if (node === this)
-            return visit.BREAK;
-          if (node.anchor === this.source)
-            found = node;
-        }
-      });
+      for (const node of nodes) {
+        if (node === this)
+          break;
+        if (node.anchor === this.source)
+          found = node;
+      }
       return found;
     }
     toJSON(_arg, ctx) {
       if (!ctx)
         return { source: this.source };
       const { anchors, doc, maxAliasCount } = ctx;
-      const source = this.resolve(doc);
+      const source = this.resolve(doc, ctx);
       if (!source) {
         const msg = `Unresolved alias (the anchor must be set before the alias): ${this.source}`;
         throw new ReferenceError(msg);
@@ -12353,7 +12373,7 @@
         toJS(source, null, ctx);
         data2 = anchors.get(source);
       }
-      if (!data2 || data2.res === void 0) {
+      if ((data2 == null ? void 0 : data2.res) === void 0) {
         const msg = "This should not happen: Alias anchor was not resolved?";
         throw new ReferenceError(msg);
       }
@@ -12453,8 +12473,7 @@
     if (aliasDuplicateObjects && value && typeof value === "object") {
       ref = sourceObjects.get(value);
       if (ref) {
-        if (!ref.anchor)
-          ref.anchor = onAnchor(value);
+        ref.anchor ?? (ref.anchor = onAnchor(value));
         return new Alias(ref.anchor);
       } else {
         ref = { anchor: null, node: null };
@@ -12888,7 +12907,7 @@ ${indent}`) + "'";
   }
   function blockString({ comment: comment2, type, value }, ctx, onComment, onChompKeep) {
     const { blockQuote, commentString, lineWidth } = ctx.options;
-    if (!blockQuote || /\n[\t ]+$/.test(value) || /^\s*$/.test(value)) {
+    if (!blockQuote || /\n[\t ]+$/.test(value)) {
       return quotedString(value, ctx);
     }
     const indent = ctx.indent || (ctx.forceBlockIndent || containsDocumentMarker(value) ? "  " : "");
@@ -12967,7 +12986,7 @@ ${indent}${start}${value}${end2}`;
     if (implicitKey && value.includes("\n") || inFlow && /[[\]{},]/.test(value)) {
       return quotedString(value, ctx);
     }
-    if (!value || /^[\n\t ,[\]{}#&*!|>'"%@`]|^[?-]$|^[?-][ \t]|[\n:][ \t]|[ \t]\n|[\n\t ]#|[\n\t :]$/.test(value)) {
+    if (/^[\n\t ,[\]{}#&*!|>'"%@`]|^[?-]$|^[?-][ \t]|[\n:][ \t]|[ \t]\n|[\n\t ]#|[\n\t :]$/.test(value)) {
       return implicitKey || inFlow || !value.includes("\n") ? quotedString(value, ctx) : blockString(item, ctx, onComment, onChompKeep);
     }
     if (!implicitKey && !inFlow && type !== Scalar.PLAIN && value.includes("\n")) {
@@ -13044,6 +13063,7 @@ ${indent}`);
       nullStr: "null",
       simpleKeys: false,
       singleQuote: null,
+      trailingComma: false,
       trueStr: "true",
       verifyAliasOrder: true
     }, doc.schema.toStringOptions, options);
@@ -13094,7 +13114,7 @@ ${indent}`);
       tagObj = tags.find((t) => t.nodeClass && obj instanceof t.nodeClass);
     }
     if (!tagObj) {
-      const name2 = ((_a2 = obj == null ? void 0 : obj.constructor) == null ? void 0 : _a2.name) ?? typeof obj;
+      const name2 = ((_a2 = obj == null ? void 0 : obj.constructor) == null ? void 0 : _a2.name) ?? (obj === null ? "null" : typeof obj);
       throw new Error(`Tag not resolved for ${name2} value`);
     }
     return tagObj;
@@ -13108,7 +13128,7 @@ ${indent}`);
       anchors.add(anchor);
       props.push(`&${anchor}`);
     }
-    const tag = node.tag ? node.tag : tagObj.default ? null : tagObj.tag;
+    const tag = node.tag ?? (tagObj.default ? null : tagObj.tag);
     if (tag)
       props.push(doc.directives.tagString(tag));
     return props.join(" ");
@@ -13132,8 +13152,7 @@ ${indent}`);
     }
     let tagObj = void 0;
     const node = isNode(item) ? item : ctx.doc.createNode(item, { onTagObj: (o) => tagObj = o });
-    if (!tagObj)
-      tagObj = getTagObject(ctx.doc.schema.tags, node);
+    tagObj ?? (tagObj = getTagObject(ctx.doc.schema.tags, node));
     const props = stringifyProps(node, tagObj, ctx);
     if (props.length > 0)
       ctx.indentAtStart = (ctx.indentAtStart ?? 0) + props.length + 1;
@@ -13225,7 +13244,7 @@ ${indent}:`;
 ${indentComment(cs, ctx.indent)}`;
       }
       if (valueStr === "" && !ctx.inFlow) {
-        if (ws === "\n")
+        if (ws === "\n" && valueComment)
           ws = "\n\n";
       } else {
         ws += `
@@ -13266,10 +13285,7 @@ ${ctx.indent}`;
   }
   function warn(logLevel, warning) {
     if (logLevel === "debug" || logLevel === "warn") {
-      if (typeof process !== "undefined" && process.emitWarning)
-        process.emitWarning(warning);
-      else
-        console.warn(warning);
+      console.warn(warning);
     }
   }
   const MERGE_KEY = "<<";
@@ -13491,12 +13507,19 @@ ${indent}${line}` : "\n";
       if (comment2)
         reqNewline = true;
       let str = stringify(item, itemCtx, () => comment2 = null);
-      if (i < items.length - 1)
+      reqNewline || (reqNewline = lines.length > linesAtValue || str.includes("\n"));
+      if (i < items.length - 1) {
         str += ",";
+      } else if (ctx.options.trailingComma) {
+        if (ctx.options.lineWidth > 0) {
+          reqNewline || (reqNewline = lines.reduce((sum, line) => sum + line.length + 2, 2) + (str.length + 2) > ctx.options.lineWidth);
+        }
+        if (reqNewline) {
+          str += ",";
+        }
+      }
       if (comment2)
         str += lineComment(str, itemIndent, commentString(comment2));
-      if (!reqNewline && (lines.length > linesAtValue || str.includes("\n")))
-        reqNewline = true;
       lines.push(str);
       linesAtValue = lines.length;
     }
@@ -13824,7 +13847,7 @@ ${indent}${end2}`;
     const num = typeof value === "number" ? value : Number(value);
     if (!isFinite(num))
       return isNaN(num) ? ".nan" : num < 0 ? "-.inf" : ".inf";
-    let n = JSON.stringify(value);
+    let n = Object.is(value, -0) ? "-0" : JSON.stringify(value);
     if (!format2 && minFractionDigits && (!tag || tag === "tag:yaml.org,2002:float") && /^\d/.test(n)) {
       let i = n.indexOf(".");
       if (i < 0) {
@@ -13988,9 +14011,7 @@ ${indent}${end2}`;
      *   document.querySelector('#photo').src = URL.createObjectURL(blob)
      */
     resolve(src, onError) {
-      if (typeof Buffer === "function") {
-        return Buffer.from(src, "base64");
-      } else if (typeof atob === "function") {
+      if (typeof atob === "function") {
         const str = atob(src.replace(/[\n\r]/g, ""));
         const buffer = new Uint8Array(str.length);
         for (let i = 0; i < str.length; ++i)
@@ -14002,11 +14023,11 @@ ${indent}${end2}`;
       }
     },
     stringify({ comment: comment2, type, value }, ctx, onComment, onChompKeep) {
+      if (!value)
+        return "";
       const buf = value;
       let str;
-      if (typeof Buffer === "function") {
-        str = buf instanceof Buffer ? buf.toString("base64") : Buffer.from(buf.buffer).toString("base64");
-      } else if (typeof btoa === "function") {
+      if (typeof btoa === "function") {
         let s = "";
         for (let i = 0; i < buf.length; ++i)
           s += String.fromCharCode(buf[i]);
@@ -14014,8 +14035,7 @@ ${indent}${end2}`;
       } else {
         throw new Error("This environment does not support writing binary tags; either Buffer or btoa is required");
       }
-      if (!type)
-        type = Scalar.BLOCK_LITERAL;
+      type ?? (type = Scalar.BLOCK_LITERAL);
       if (type !== Scalar.QUOTE_DOUBLE) {
         const lineWidth = Math.max(ctx.options.lineWidth - ctx.indent.length, ctx.options.minContentWidth);
         const n = Math.ceil(str.length / lineWidth);
@@ -14434,7 +14454,7 @@ ${cn.comment}` : item.comment;
       }
       return new Date(date);
     },
-    stringify: ({ value }) => value.toISOString().replace(/(T00:00:00)?\.000Z$/, "")
+    stringify: ({ value }) => (value == null ? void 0 : value.toISOString().replace(/(T00:00:00)?\.000Z$/, "")) ?? ""
   };
   const schema = [
     map,
@@ -14950,7 +14970,7 @@ ${cn.comment}` : item.comment;
     if (/[^ ]/.test(lineStr)) {
       let count = 1;
       const end2 = error2.linePos[1];
-      if (end2 && end2.line === line && end2.col > col) {
+      if ((end2 == null ? void 0 : end2.line) === line && end2.col > col) {
         count = Math.max(1, Math.min(end2.col - col, 80 - ci));
       }
       const pointer = " ".repeat(ci) + "^".repeat(count);
@@ -15011,7 +15031,7 @@ ${pointer}
           if (atNewline) {
             if (comment2)
               comment2 += token.source;
-            else
+            else if (!found || indicator !== "seq-item-ind")
               spaceBefore = true;
           } else
             commentSep += token.source;
@@ -15027,8 +15047,7 @@ ${pointer}
           if (token.source.endsWith(":"))
             onError(token.offset + token.source.length - 1, "BAD_ALIAS", "Anchor ending in : is ambiguous", true);
           anchor = token;
-          if (start === null)
-            start = token.offset;
+          start ?? (start = token.offset);
           atNewline = false;
           hasSpace = false;
           reqSpace = true;
@@ -15037,8 +15056,7 @@ ${pointer}
           if (tag)
             onError(token, "MULTIPLE_TAGS", "A node can have at most one tag");
           tag = token;
-          if (start === null)
-            start = token.offset;
+          start ?? (start = token.offset);
           atNewline = false;
           hasSpace = false;
           reqSpace = true;
@@ -15254,7 +15272,7 @@ ${pointer}
       });
       if (!props.found) {
         if (props.anchor || props.tag || value) {
-          if (value && value.type === "block-seq")
+          if ((value == null ? void 0 : value.type) === "block-seq")
             onError(props.end, "BAD_INDENT", "All sequence items must start at the same column");
           else
             onError(offset, "MISSING_CHAR", "Sequence item without - indicator");
@@ -15312,6 +15330,7 @@ ${pointer}
   const blockMsg = "Block collections are not allowed within flow collections";
   const isBlock = (token) => token && (token.type === "block-map" || token.type === "block-seq");
   function resolveFlowCollection({ composeNode: composeNode2, composeEmptyNode: composeEmptyNode2 }, ctx, fc, onError, tag) {
+    var _a2;
     const isMap2 = fc.start.source === "{";
     const fcName = isMap2 ? "flow map" : "flow sequence";
     const NodeClass = (tag == null ? void 0 : tag.nodeClass) ?? (isMap2 ? YAMLMap : YAMLSeq);
@@ -15427,7 +15446,7 @@ ${pointer}
               onError(valueProps.found, "KEY_OVER_1024_CHARS", "The : indicator must be at most 1024 chars after the start of an implicit flow sequence key");
           }
         } else if (value) {
-          if ("source" in value && value.source && value.source[0] === ":")
+          if ("source" in value && ((_a2 = value.source) == null ? void 0 : _a2[0]) === ":")
             onError(value, "MISSING_CHAR", `Missing space after : in ${fcName}`);
           else
             onError(valueProps.start, "MISSING_CHAR", `Missing , or : between ${fcName} items`);
@@ -15464,7 +15483,7 @@ ${pointer}
     const expectedEnd = isMap2 ? "}" : "]";
     const [ce, ...ee] = fc.end;
     let cePos = offset;
-    if (ce && ce.source === expectedEnd)
+    if ((ce == null ? void 0 : ce.source) === expectedEnd)
       cePos = ce.offset + ce.source.length;
     else {
       const name2 = fcName[0].toUpperCase() + fcName.substring(1);
@@ -15517,12 +15536,12 @@ ${pointer}
     let tag = ctx.schema.tags.find((t) => t.tag === tagName && t.collection === expType);
     if (!tag) {
       const kt = ctx.schema.knownTags[tagName];
-      if (kt && kt.collection === expType) {
+      if ((kt == null ? void 0 : kt.collection) === expType) {
         ctx.schema.tags.push(Object.assign({}, kt, { default: false }));
         tag = kt;
       } else {
-        if (kt == null ? void 0 : kt.collection) {
-          onError(tagToken, "BAD_COLLECTION_TYPE", `${kt.tag} used for ${expType} collection, but expects ${kt.collection}`, true);
+        if (kt) {
+          onError(tagToken, "BAD_COLLECTION_TYPE", `${kt.tag} used for ${expType} collection, but expects ${kt.collection ?? "scalar"}`, true);
         } else {
           onError(tagToken, "TAG_RESOLVE_FAILED", `Unresolved tag: ${tagName}`, true);
         }
@@ -15999,8 +16018,7 @@ ${pointer}
   }
   function emptyScalarPosition(offset, before2, pos) {
     if (before2) {
-      if (pos === null)
-        pos = before2.length;
+      pos ?? (pos = before2.length);
       for (let i = pos - 1; i >= 0; --i) {
         let st = before2[i];
         switch (st.type) {
@@ -16043,17 +16061,22 @@ ${pointer}
       case "block-map":
       case "block-seq":
       case "flow-collection":
-        node = composeCollection(CN, ctx, token, props, onError);
-        if (anchor)
-          node.anchor = anchor.source.substring(1);
+        try {
+          node = composeCollection(CN, ctx, token, props, onError);
+          if (anchor)
+            node.anchor = anchor.source.substring(1);
+        } catch (error2) {
+          const message = error2 instanceof Error ? error2.message : String(error2);
+          onError(token, "RESOURCE_EXHAUSTION", message);
+        }
         break;
       default: {
         const message = token.type === "error" ? token.message : `Unsupported token (type: ${token.type})`;
         onError(token, "UNEXPECTED_TOKEN", message);
-        node = composeEmptyNode(ctx, token.offset, void 0, null, props, onError);
         isSrcToken = false;
       }
     }
+    node ?? (node = composeEmptyNode(ctx, token.offset, void 0, null, props, onError));
     if (anchor && node.anchor === "")
       onError(anchor, "BAD_ALIAS", "Anchor cannot be an empty string");
     if (atKey && ctx.options.stringKeys && (!isScalar(node) || typeof node.value !== "string" || node.tag && node.tag !== "tag:yaml.org,2002:str")) {
@@ -17165,7 +17188,7 @@ ${end2.comment}` : end2.comment;
     }
     *step() {
       const top = this.peek(1);
-      if (this.type === "doc-end" && (!top || top.type !== "doc-end")) {
+      if (this.type === "doc-end" && (top == null ? void 0 : top.type) !== "doc-end") {
         while (this.stack.length > 0)
           yield* this.pop();
         this.stack.push({
@@ -17558,7 +17581,17 @@ ${end2.comment}` : end2.comment;
           default: {
             const bv = this.startBlockValue(map2);
             if (bv) {
-              if (atMapIndent && bv.type !== "block-seq") {
+              if (bv.type === "block-seq") {
+                if (!it.explicitKey && it.sep && !includesToken(it.sep, "newline")) {
+                  yield* this.pop({
+                    type: "error",
+                    offset: this.offset,
+                    message: "Unexpected block-seq-ind on same line with key",
+                    source: this.source
+                  });
+                  return;
+                }
+              } else if (atMapIndent) {
                 map2.items.push({ start });
               }
               this.stack.push(bv);
@@ -17635,7 +17668,7 @@ ${end2.comment}` : end2.comment;
         do {
           yield* this.pop();
           top = this.peek(1);
-        } while (top && top.type === "flow-collection");
+        } while ((top == null ? void 0 : top.type) === "flow-collection");
       } else if (fc.end.length === 0) {
         switch (this.type) {
           case "comma":
@@ -18017,21 +18050,21 @@ ${end2.comment}` : end2.comment;
       return path;
     });
   }
-  var define_define_KATEX_RESOURCES_default = ["katex@0.16.18/dist/fonts/KaTeX_AMS-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Caligraphic-Bold.woff2", "katex@0.16.18/dist/fonts/KaTeX_Caligraphic-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Fraktur-Bold.woff2", "katex@0.16.18/dist/fonts/KaTeX_Fraktur-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Main-Bold.woff2", "katex@0.16.18/dist/fonts/KaTeX_Main-BoldItalic.woff2", "katex@0.16.18/dist/fonts/KaTeX_Main-Italic.woff2", "katex@0.16.18/dist/fonts/KaTeX_Main-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Math-BoldItalic.woff2", "katex@0.16.18/dist/fonts/KaTeX_Math-Italic.woff2", "katex@0.16.18/dist/fonts/KaTeX_SansSerif-Bold.woff2", "katex@0.16.18/dist/fonts/KaTeX_SansSerif-Italic.woff2", "katex@0.16.18/dist/fonts/KaTeX_SansSerif-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Script-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Size1-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Size2-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Size3-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Size4-Regular.woff2", "katex@0.16.18/dist/fonts/KaTeX_Typewriter-Regular.woff2"];
+  var define_define_KATEX_RESOURCES_default = ["katex@0.16.43/dist/fonts/KaTeX_AMS-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Caligraphic-Bold.woff2", "katex@0.16.43/dist/fonts/KaTeX_Caligraphic-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Fraktur-Bold.woff2", "katex@0.16.43/dist/fonts/KaTeX_Fraktur-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Main-Bold.woff2", "katex@0.16.43/dist/fonts/KaTeX_Main-BoldItalic.woff2", "katex@0.16.43/dist/fonts/KaTeX_Main-Italic.woff2", "katex@0.16.43/dist/fonts/KaTeX_Main-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Math-BoldItalic.woff2", "katex@0.16.43/dist/fonts/KaTeX_Math-Italic.woff2", "katex@0.16.43/dist/fonts/KaTeX_SansSerif-Bold.woff2", "katex@0.16.43/dist/fonts/KaTeX_SansSerif-Italic.woff2", "katex@0.16.43/dist/fonts/KaTeX_SansSerif-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Script-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Size1-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Size2-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Size3-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Size4-Regular.woff2", "katex@0.16.43/dist/fonts/KaTeX_Typewriter-Regular.woff2"];
   const name$2 = "katex";
   const preloadScripts = [
-    `katex@${"0.16.18"}/dist/katex.min.js`
+    `katex@${"0.16.43"}/dist/katex.min.js`
   ].map((path) => buildJSItem(path));
   const webfontloader = buildJSItem(
     `webfontloader@${"1.6.28"}/webfontloader.js`
   );
   webfontloader.data.defer = true;
-  const styles = [`katex@${"0.16.18"}/dist/katex.min.css`].map(
+  const styles = [`katex@${"0.16.43"}/dist/katex.min.css`].map(
     (path) => buildCSSItem(path)
   );
   const config = {
     versions: {
-      katex: "0.16.18",
+      katex: "0.16.43",
       webfontloader: "1.6.28"
     },
     preloadScripts,
@@ -18180,7 +18213,9 @@ ${end2.comment}` : end2.comment;
       return true;
     }
     function blockMath(state, start, end2, silent) {
-      var lastLine, next2, lastPos, found = false, token, pos = state.bMarks[start] + state.tShift[start], max = state.eMarks[start];
+      let found = false;
+      let pos = state.bMarks[start] + state.tShift[start];
+      let max = state.eMarks[start];
       if (pos + 2 > max) {
         return false;
       }
@@ -18189,13 +18224,19 @@ ${end2.comment}` : end2.comment;
       }
       pos += 2;
       let firstLine = state.src.slice(pos, max);
+      const endIndexes = [...firstLine.matchAll(/\$\$/g)];
+      if (endIndexes.length === 1 && endIndexes[0].index === firstLine.length - 2) {
+        firstLine = firstLine.trim().slice(0, -2);
+        found = true;
+      } else if (endIndexes.length > 1) {
+        return false;
+      }
       if (silent) {
         return true;
       }
-      if (firstLine.trim().slice(-2) === "$$") {
-        firstLine = firstLine.trim().slice(0, -2);
-        found = true;
-      }
+      let lastLine;
+      let next2;
+      let lastPos;
       for (next2 = start; !found; ) {
         next2++;
         if (next2 >= end2) {
@@ -18217,7 +18258,7 @@ ${end2.comment}` : end2.comment;
         }
       }
       state.line = next2 + 1;
-      token = state.push("math_block", "math", 0);
+      const token = state.push("math_block", "math", 0);
       token.block = true;
       token.content = (firstLine && firstLine.trim() ? firstLine + "\n" : "") + state.getLines(start + 1, next2, state.tShift[start], true) + (lastLine && lastLine.trim() ? lastLine : "");
       token.map = [start, state.line];
@@ -18729,7 +18770,7 @@ ${end2.comment}` : end2.comment;
         {
           type: "stylesheet",
           data: {
-            href: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+            href: "https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/katex.min.css"
           }
         }
       ],
@@ -18737,7 +18778,7 @@ ${end2.comment}` : end2.comment;
         {
           type: "script",
           data: {
-            src: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+            src: "https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/katex.min.js"
           }
         }
       ]

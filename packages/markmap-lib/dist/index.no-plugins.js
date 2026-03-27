@@ -136,7 +136,7 @@ const pluginAssets = {
       {
         type: "stylesheet",
         data: {
-          href: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+          href: "https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/katex.min.css"
         }
       }
     ],
@@ -144,7 +144,7 @@ const pluginAssets = {
       {
         type: "script",
         data: {
-          src: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+          src: "https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/katex.min.js"
         }
       }
     ]
