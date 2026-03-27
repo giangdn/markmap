@@ -1,12 +1,37 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { readPackageUp } from 'read-package-up';
+
+const dir = import.meta.dirname;
+
+const internalPackages = [
+  'markmap-common',
+  'markmap-html-parser',
+  'markmap-lib',
+  'markmap-toolbar',
+  'markmap-render',
+  'markmap-autoloader',
+  'd3',
+];
+
+const { packageJson: pkg } = await readPackageUp({ cwd: dir });
+const external = [
+  ...Object.keys(pkg.dependencies).filter(
+    (dep) => !internalPackages.includes(dep),
+  ),
+  ...Object.keys(pkg.peerDependencies || {}).filter(
+    (dep) => !internalPackages.includes(dep),
+  ),
+];
+
+const aliases = {
+  'markmap-common': resolve(dir, '../markmap-common/src/index.ts'),
+  'markmap-html-parser': resolve(dir, '../markmap-html-parser/src/index.ts'),
+  'markmap-lib': resolve(dir, '../markmap-lib/src/index.ts'),
+};
 
 const configEs = defineConfig({
-  resolve: {
-    alias: {
-      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
-    },
-  },
+  resolve: { alias: aliases },
   build: {
     emptyOutDir: false,
     lib: {
@@ -14,18 +39,12 @@ const configEs = defineConfig({
       formats: ['es', 'cjs'],
       fileName: (format) => `index.${format === 'es' ? 'mjs' : 'js'}`,
     },
-    rollupOptions: {
-      external: ['d3', 'markmap-common'],
-    },
+    rollupOptions: { external },
   },
 });
 
 const configJs = defineConfig({
-  resolve: {
-    alias: {
-      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
-    },
-  },
+  resolve: { alias: aliases },
   build: {
     emptyOutDir: false,
     outDir: 'dist/browser',
