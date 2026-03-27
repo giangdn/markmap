@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 import { versionLoader } from '../../util.mts';
 
 const getVersion = versionLoader(import.meta.dirname);
@@ -11,6 +12,18 @@ export default defineConfig({
     '__define__.TOOLBAR_VERSION': JSON.stringify(
       await getVersion('markmap-toolbar'),
     ),
+  },
+  resolve: {
+    alias: {
+      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
+      'markmap-lib': resolve(__dirname, '../markmap-lib/src/index.ts'),
+      'markmap-view': resolve(__dirname, '../markmap-view/src/index.ts'),
+      'markmap-toolbar': resolve(__dirname, '../markmap-toolbar/src/index.ts'),
+      'markmap-html-parser': resolve(
+        __dirname,
+        '../markmap-html-parser/src/index.ts',
+      ),
+    },
   },
   build: {
     emptyOutDir: false,

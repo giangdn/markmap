@@ -3,6 +3,7 @@ import { builtinModules } from 'module';
 import { join } from 'path';
 import { readPackageUp } from 'read-package-up';
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 import { versionLoader } from '../../util.mts';
 
 const getVersion = versionLoader(import.meta.dirname);
@@ -26,6 +27,16 @@ const define = {
 
 export default defineConfig({
   define,
+  resolve: {
+    alias: {
+      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
+      'markmap-lib': resolve(__dirname, '../markmap-lib/src/index.ts'),
+      'markmap-html-parser': resolve(
+        __dirname,
+        '../markmap-html-parser/src/index.ts',
+      ),
+    },
+  },
   build: {
     emptyOutDir: false,
     minify: false,

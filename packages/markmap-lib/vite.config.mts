@@ -4,6 +4,7 @@ import { join } from 'path';
 import { readPackageUp } from 'read-package-up';
 import { defineConfig } from 'vite';
 import { versionLoader } from '../../util.mts';
+import { resolve } from 'path';
 
 const getVersion = versionLoader(import.meta.dirname);
 const { packageJson: pkg } = await readPackageUp({ cwd: import.meta.dirname });
@@ -38,6 +39,12 @@ const define = {
 
 const configNode = defineConfig({
   define,
+  resolve: {
+    alias: {
+      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
+      'markmap-html-parser': resolve(__dirname, '../markmap-html-parser/src/index.ts'),
+    },
+  },
   build: {
     emptyOutDir: false,
     minify: false,
@@ -97,6 +104,12 @@ const configBrowserEs = defineConfig({
 
 const configBrowserJs = defineConfig({
   define,
+  resolve: {
+    alias: {
+      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
+      'markmap-html-parser': resolve(__dirname, '../markmap-html-parser/src/index.ts'),
+    },
+  },
   build: {
     emptyOutDir: false,
     minify: false,

@@ -1,6 +1,12 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
 const configEs = defineConfig({
+  resolve: {
+    alias: {
+      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
+    },
+  },
   build: {
     emptyOutDir: false,
     minify: false,
@@ -17,6 +23,11 @@ const configEs = defineConfig({
 });
 
 const configJs = defineConfig({
+  resolve: {
+    alias: {
+      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
+    },
+  },
   build: {
     emptyOutDir: false,
     minify: false,

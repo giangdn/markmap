@@ -121,262 +121,195 @@ class Transformer {
   }
 }
 Math.random().toString(36).slice(2, 8);
-function defer() {
-  const obj = {};
-  obj.promise = new Promise((resolve, reject) => {
-    obj.resolve = resolve;
-    obj.reject = reject;
-  });
-  return obj;
+function g() {
+  const t = {};
+  return t.promise = new Promise((e, n) => {
+    t.resolve = e, t.reject = n;
+  }), t;
 }
-function memoize(fn) {
-  const cache = {};
-  return function memoized(...args) {
-    const key = `${args[0]}`;
-    let data = cache[key];
-    if (!data) {
-      data = {
-        value: fn(...args)
-      };
-      cache[key] = data;
-    }
-    return data.value;
+function O(t) {
+  const e = {};
+  return function(...r) {
+    const s = `${r[0]}`;
+    let o = e[s];
+    return o || (o = {
+      value: t(...r)
+    }, e[s] = o), o.value;
   };
 }
 /*! @gera2ld/jsx-dom v2.2.2 | ISC License */
-const VTYPE_ELEMENT = 1;
-const VTYPE_FUNCTION = 2;
-const SVG_NS = "http://www.w3.org/2000/svg";
-const XLINK_NS = "http://www.w3.org/1999/xlink";
-const NS_ATTRS = {
-  show: XLINK_NS,
-  actuate: XLINK_NS,
-  href: XLINK_NS
-};
-const isLeaf = (c) => typeof c === "string" || typeof c === "number";
-const isElement = (c) => (c == null ? void 0 : c.vtype) === VTYPE_ELEMENT;
-const isRenderFunction = (c) => (c == null ? void 0 : c.vtype) === VTYPE_FUNCTION;
-function h(type, props, ...children) {
-  props = Object.assign({}, props, {
-    children: children.length === 1 ? children[0] : children
-  });
-  return jsx(type, props);
+const v = 1, b = 2, P = "http://www.w3.org/2000/svg", a = "http://www.w3.org/1999/xlink", F = {
+  show: a,
+  actuate: a,
+  href: a
+}, L = (t) => typeof t == "string" || typeof t == "number", M = (t) => (t == null ? void 0 : t.vtype) === v, _ = (t) => (t == null ? void 0 : t.vtype) === b;
+function V(t, e, ...n) {
+  return e = Object.assign({}, e, {
+    children: n.length === 1 ? n[0] : n
+  }), B(t, e);
 }
-function jsx(type, props) {
-  let vtype;
-  if (typeof type === "string") vtype = VTYPE_ELEMENT;
-  else if (typeof type === "function") vtype = VTYPE_FUNCTION;
+function B(t, e) {
+  let n;
+  if (typeof t == "string") n = v;
+  else if (typeof t == "function") n = b;
   else throw new Error("Invalid VNode type");
   return {
-    vtype,
-    type,
-    props
+    vtype: n,
+    type: t,
+    props: e
   };
 }
-function Fragment(props) {
-  return props.children;
+function H(t) {
+  return t.children;
 }
-const DEFAULT_ENV = {
+const J = {
   isSvg: false
 };
-function insertDom(parent, nodes) {
-  if (!Array.isArray(nodes)) nodes = [nodes];
-  nodes = nodes.filter(Boolean);
-  if (nodes.length) parent.append(...nodes);
+function w(t, e) {
+  Array.isArray(e) || (e = [e]), e = e.filter(Boolean), e.length && t.append(...e);
 }
-function mountAttributes(domElement, props, env) {
-  for (const key in props) {
-    if (key === "key" || key === "children" || key === "ref") continue;
-    if (key === "dangerouslySetInnerHTML") {
-      domElement.innerHTML = props[key].__html;
-    } else if (key === "innerHTML" || key === "textContent" || key === "innerText" || key === "value" && ["textarea", "select"].includes(domElement.tagName)) {
-      const value = props[key];
-      if (value != null) domElement[key] = value;
-    } else if (key.startsWith("on")) {
-      domElement[key.toLowerCase()] = props[key];
-    } else {
-      setDOMAttribute(domElement, key, props[key], env.isSvg);
-    }
-  }
+function D(t, e, n) {
+  for (const r in e)
+    if (!(r === "key" || r === "children" || r === "ref"))
+      if (r === "dangerouslySetInnerHTML")
+        t.innerHTML = e[r].__html;
+      else if (r === "innerHTML" || r === "textContent" || r === "innerText" || r === "value" && ["textarea", "select"].includes(t.tagName)) {
+        const s = e[r];
+        s != null && (t[r] = s);
+      } else r.startsWith("on") ? t[r.toLowerCase()] = e[r] : z(t, r, e[r], n.isSvg);
 }
-const attrMap = {
+const U = {
   className: "class",
   labelFor: "for"
 };
-function setDOMAttribute(el, attr, value, isSVG) {
-  attr = attrMap[attr] || attr;
-  if (value === true) {
-    el.setAttribute(attr, "");
-  } else if (value === false) {
-    el.removeAttribute(attr);
-  } else {
-    const namespace = isSVG ? NS_ATTRS[attr] : void 0;
-    if (namespace !== void 0) {
-      el.setAttributeNS(namespace, attr, value);
-    } else {
-      el.setAttribute(attr, value);
-    }
+function z(t, e, n, r) {
+  if (e = U[e] || e, n === true)
+    t.setAttribute(e, "");
+  else if (n === false)
+    t.removeAttribute(e);
+  else {
+    const s = r ? F[e] : void 0;
+    s !== void 0 ? t.setAttributeNS(s, e, n) : t.setAttribute(e, n);
   }
 }
-function flatten(arr) {
-  return arr.reduce((prev, item) => prev.concat(item), []);
+function q(t) {
+  return t.reduce((e, n) => e.concat(n), []);
 }
-function mountChildren(children, env) {
-  return Array.isArray(children) ? flatten(children.map((child) => mountChildren(child, env))) : mount(children, env);
+function f(t, e) {
+  return Array.isArray(t) ? q(t.map((n) => f(n, e))) : d(t, e);
 }
-function mount(vnode, env = DEFAULT_ENV) {
-  if (vnode == null || typeof vnode === "boolean") {
+function d(t, e = J) {
+  if (t == null || typeof t == "boolean")
     return null;
-  }
-  if (vnode instanceof Node) {
-    return vnode;
-  }
-  if (isRenderFunction(vnode)) {
+  if (t instanceof Node)
+    return t;
+  if (_(t)) {
     const {
-      type,
-      props
-    } = vnode;
-    if (type === Fragment) {
-      const node = document.createDocumentFragment();
-      if (props.children) {
-        const children = mountChildren(props.children, env);
-        insertDom(node, children);
+      type: n,
+      props: r
+    } = t;
+    if (n === H) {
+      const o = document.createDocumentFragment();
+      if (r.children) {
+        const i = f(r.children, e);
+        w(o, i);
       }
-      return node;
+      return o;
     }
-    const childVNode = type(props);
-    return mount(childVNode, env);
+    const s = n(r);
+    return d(s, e);
   }
-  if (isLeaf(vnode)) {
-    return document.createTextNode(`${vnode}`);
-  }
-  if (isElement(vnode)) {
-    let node;
+  if (L(t))
+    return document.createTextNode(`${t}`);
+  if (M(t)) {
+    let n;
     const {
-      type,
-      props
-    } = vnode;
-    if (!env.isSvg && type === "svg") {
-      env = Object.assign({}, env, {
-        isSvg: true
-      });
-    }
-    if (!env.isSvg) {
-      node = document.createElement(type);
-    } else {
-      node = document.createElementNS(SVG_NS, type);
-    }
-    mountAttributes(node, props, env);
-    if (props.children) {
-      let childEnv = env;
-      if (env.isSvg && type === "foreignObject") {
-        childEnv = Object.assign({}, childEnv, {
-          isSvg: false
-        });
-      }
-      const children = mountChildren(props.children, childEnv);
-      if (children != null) insertDom(node, children);
+      type: r,
+      props: s
+    } = t;
+    if (!e.isSvg && r === "svg" && (e = Object.assign({}, e, {
+      isSvg: true
+    })), e.isSvg ? n = document.createElementNS(P, r) : n = document.createElement(r), D(n, s, e), s.children) {
+      let i = e;
+      e.isSvg && r === "foreignObject" && (i = Object.assign({}, i, {
+        isSvg: false
+      }));
+      const c = f(s.children, i);
+      c != null && w(n, c);
     }
     const {
-      ref
-    } = props;
-    if (typeof ref === "function") ref(node);
-    return node;
+      ref: o
+    } = s;
+    return typeof o == "function" && o(n), n;
   }
   throw new Error("mount: Invalid Vnode!");
 }
-function mountDom(vnode) {
-  return mount(vnode);
+function R(t) {
+  return d(t);
 }
-function hm(...args) {
-  return mountDom(h(...args));
+function u(...t) {
+  return R(V(...t));
 }
-const memoizedPreloadJS = memoize((url) => {
+const Y = O((t) => {
   document.head.append(
-    hm("link", {
+    u("link", {
       rel: "preload",
       as: "script",
-      href: url
+      href: t
     })
   );
-});
-const jsCache = {};
-const cssCache = {};
-async function loadJSItem(item, context) {
-  var _a;
-  const src = item.type === "script" && ((_a = item.data) == null ? void 0 : _a.src) || "";
-  item.loaded || (item.loaded = jsCache[src]);
-  if (!item.loaded) {
-    const deferred = defer();
-    item.loaded = deferred.promise;
-    if (item.type === "script") {
-      document.head.append(
-        hm("script", {
-          ...item.data,
-          onLoad: () => deferred.resolve(),
-          onError: deferred.reject
-        })
-      );
-      if (!src) {
-        deferred.resolve();
-      } else {
-        jsCache[src] = item.loaded;
-      }
-    }
-    if (item.type === "iife") {
-      const { fn, getParams } = item.data;
-      fn(...(getParams == null ? void 0 : getParams(context)) || []);
-      deferred.resolve();
+}), S = {}, m = {};
+async function G(t, e) {
+  var r;
+  const n = t.type === "script" && ((r = t.data) == null ? void 0 : r.src) || "";
+  if (t.loaded || (t.loaded = S[n]), !t.loaded) {
+    const s = g();
+    if (t.loaded = s.promise, t.type === "script" && (document.head.append(
+      u("script", {
+        ...t.data,
+        onLoad: () => s.resolve(),
+        onError: s.reject
+      })
+    ), n ? S[n] = t.loaded : s.resolve()), t.type === "iife") {
+      const { fn: o, getParams: i } = t.data;
+      o(...(i == null ? void 0 : i(e)) || []), s.resolve();
     }
   }
-  await item.loaded;
+  await t.loaded;
 }
-async function loadCSSItem(item) {
-  const url = item.type === "stylesheet" && item.data.href || "";
-  item.loaded || (item.loaded = cssCache[url]);
-  if (!item.loaded) {
-    const deferred = defer();
-    item.loaded = deferred.promise;
-    if (url) cssCache[url] = item.loaded;
-    if (item.type === "style") {
-      document.head.append(
-        hm("style", {
-          textContent: item.data
-        })
-      );
-      deferred.resolve();
-    } else if (url) {
-      document.head.append(
-        hm("link", {
-          rel: "stylesheet",
-          ...item.data
-        })
-      );
-      fetch(url).then((res) => {
-        if (res.ok) return res.text();
-        throw res;
-      }).then(() => deferred.resolve(), deferred.reject);
-    }
+async function K(t) {
+  const e = t.type === "stylesheet" && t.data.href || "";
+  if (t.loaded || (t.loaded = m[e]), !t.loaded) {
+    const n = g();
+    t.loaded = n.promise, e && (m[e] = t.loaded), t.type === "style" ? (document.head.append(
+      u("style", {
+        textContent: t.data
+      })
+    ), n.resolve()) : e && (document.head.append(
+      u("link", {
+        rel: "stylesheet",
+        ...t.data
+      })
+    ), fetch(e).then((r) => {
+      if (r.ok) return r.text();
+      throw r;
+    }).then(() => n.resolve(), n.reject));
   }
-  await item.loaded;
+  await t.loaded;
 }
-async function loadJS(items, context) {
-  items.forEach((item) => {
-    var _a;
-    if (item.type === "script" && ((_a = item.data) == null ? void 0 : _a.src)) {
-      memoizedPreloadJS(item.data.src);
-    }
-  });
-  context = {
+async function it(t, e) {
+  t.forEach((n) => {
+    var r;
+    n.type === "script" && ((r = n.data) != null && r.src) && Y(n.data.src);
+  }), e = {
     getMarkmap: () => window.markmap,
-    ...context
+    ...e
   };
-  for (const item of items) {
-    await loadJSItem(item, context);
-  }
+  for (const n of t)
+    await G(n, e);
 }
-async function loadCSS(items) {
-  await Promise.all(items.map((item) => loadCSSItem(item)));
+async function ct(t) {
+  await Promise.all(t.map((e) => K(e)));
 }
 const pluginAssets = {
   katex: {
@@ -444,8 +377,8 @@ async function loadPlugins(plugins2 = ["katex", "hljs"]) {
       allScripts.push(...assets.scripts);
     }
   }
-  await loadCSS(allStyles);
-  await loadJS(allScripts);
+  await ct(allStyles);
+  await it(allScripts);
   const loaded = {};
   if (typeof window !== "undefined") {
     loaded.katex = !!window.katex;

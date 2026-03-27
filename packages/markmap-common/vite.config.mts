@@ -1,13 +1,15 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
 export default defineConfig({
   build: {
-    emptyOutDir: false,
-    minify: false,
     lib: {
-      entry: 'src/index.ts',
-      formats: ['cjs', 'es'],
-      fileName: 'index',
+      entry: resolve(__dirname, 'src/index.ts'),
+      formats: ['es', 'cjs'],
+      fileName: (format) => `index.${format === 'es' ? 'mjs' : 'js'}`,
+    },
+    rollupOptions: {
+      external: [],
     },
   },
 });

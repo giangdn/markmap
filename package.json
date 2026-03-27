@@ -52,6 +52,16 @@
       "require": "./packages/markmap-html-parser/dist/index.js",
       "types": "./packages/markmap-html-parser/dist/index.d.ts"
     },
+    "./render": {
+      "import": "./packages/markmap-render/dist/index.mjs",
+      "require": "./packages/markmap-render/dist/index.js",
+      "types": "./packages/markmap-render/dist/index.d.ts"
+    },
+    "./autoloader": {
+      "import": "./packages/markmap-autoloader/dist/index.mjs",
+      "require": "./packages/markmap-autoloader/dist/index.js",
+      "types": "./packages/markmap-autoloader/dist/index.d.ts"
+    },
     "./hljs": {
       "import": "highlight.js",
       "require": "highlight.js"
