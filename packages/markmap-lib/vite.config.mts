@@ -68,6 +68,12 @@ const configNodeLight = defineConfig({
     ...define,
     '__define__.NO_PLUGINS': 'true',
   },
+  resolve: {
+    alias: {
+      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
+      'markmap-html-parser': resolve(__dirname, '../markmap-html-parser/src/index.ts'),
+    },
+  },
   build: {
     emptyOutDir: false,
     minify: false,
@@ -84,6 +90,13 @@ const configNodeLight = defineConfig({
 
 const configBrowserEs = defineConfig({
   define,
+  resolve: {
+    alias: {
+      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
+      'markmap-html-parser': resolve(__dirname, '../markmap-html-parser/src/index.ts'),
+    },
+    extensions: ['.browser.ts', '.ts'],
+  },
   build: {
     emptyOutDir: false,
     minify: false,
@@ -97,9 +110,6 @@ const configBrowserEs = defineConfig({
       external,
     },
   },
-  resolve: {
-    extensions: ['.browser.ts', '.ts'],
-  },
 });
 
 const configBrowserJs = defineConfig({
@@ -109,6 +119,7 @@ const configBrowserJs = defineConfig({
       'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
       'markmap-html-parser': resolve(__dirname, '../markmap-html-parser/src/index.ts'),
     },
+    extensions: ['.browser.ts', '.ts'],
   },
   build: {
     emptyOutDir: false,
@@ -130,9 +141,6 @@ const configBrowserJs = defineConfig({
         },
       },
     },
-  },
-  resolve: {
-    extensions: ['.browser.ts', '.ts'],
   },
 });
 
