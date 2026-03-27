@@ -11,8 +11,8 @@ const configEs = defineConfig({
     emptyOutDir: false,
     lib: {
       entry: 'src/index.ts',
-      formats: ['es'],
-      fileName: 'index',
+      formats: ['es', 'cjs'],
+      fileName: (format) => `index.${format === 'es' ? 'mjs' : 'js'}`,
     },
     rollupOptions: {
       external: ['d3', 'markmap-common'],
