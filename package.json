@@ -52,7 +52,12 @@
       "require": "katex"
     },
     "./katex/style.css": "katex/dist/katex.min.css",
-    "./hljs/style.css": "highlight.js/styles/default.css"
+    "./hljs/style.css": "highlight.js/styles/default.css",
+    "./plugins": {
+      "import": "./packages/markmap-lib/dist/plugins-loader.mjs",
+      "require": "./packages/markmap-lib/dist/plugins-loader.js",
+      "types": "./packages/markmap-lib/dist/plugins-loader.d.ts"
+    }
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
