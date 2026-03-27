@@ -9,10 +9,20 @@ import { resolve } from 'path';
 const getVersion = versionLoader(import.meta.dirname);
 const { packageJson: pkg } = await readPackageUp({ cwd: import.meta.dirname });
 
+// List of internal markmap packages to bundle (not externalize)
+const internalPackages = [
+  'markmap-common',
+  'markmap-html-parser',
+  'markmap-view',
+  'markmap-toolbar',
+  'markmap-render',
+  'markmap-autoloader',
+];
+
 const external = [
   ...builtinModules,
-  ...Object.keys(pkg.dependencies),
-  ...Object.keys(pkg.peerDependencies),
+  ...Object.keys(pkg.dependencies).filter(dep => !internalPackages.includes(dep)),
+  ...Object.keys(pkg.peerDependencies || {}).filter(dep => !internalPackages.includes(dep)),
 ];
 
 const katexVersion = await getVersion('katex');
@@ -37,14 +47,14 @@ const define = {
   '__define__.NO_PLUGINS': 'false',
 };
 
+const aliases = {
+  'markmap-common': resolve(import.meta.dirname, '../markmap-common/src/index.ts'),
+  'markmap-html-parser': resolve(import.meta.dirname, '../markmap-html-parser/src/index.ts'),
+};
+
 const configNode = defineConfig({
   define,
-  resolve: {
-    alias: {
-      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
-      'markmap-html-parser': resolve(__dirname, '../markmap-html-parser/src/index.ts'),
-    },
-  },
+  resolve: {alias: aliases},
   build: {
     emptyOutDir: false,
     minify: false,
@@ -68,12 +78,7 @@ const configNodeLight = defineConfig({
     ...define,
     '__define__.NO_PLUGINS': 'true',
   },
-  resolve: {
-    alias: {
-      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
-      'markmap-html-parser': resolve(__dirname, '../markmap-html-parser/src/index.ts'),
-    },
-  },
+  resolve: {alias: aliases},
   build: {
     emptyOutDir: false,
     minify: false,
@@ -91,10 +96,7 @@ const configNodeLight = defineConfig({
 const configBrowserEs = defineConfig({
   define,
   resolve: {
-    alias: {
-      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
-      'markmap-html-parser': resolve(__dirname, '../markmap-html-parser/src/index.ts'),
-    },
+    alias: aliases,
     extensions: ['.browser.ts', '.ts'],
   },
   build: {
@@ -115,10 +117,7 @@ const configBrowserEs = defineConfig({
 const configBrowserJs = defineConfig({
   define,
   resolve: {
-    alias: {
-      'markmap-common': resolve(__dirname, '../markmap-common/src/index.ts'),
-      'markmap-html-parser': resolve(__dirname, '../markmap-html-parser/src/index.ts'),
-    },
+    alias: aliases,
     extensions: ['.browser.ts', '.ts'],
   },
   build: {
