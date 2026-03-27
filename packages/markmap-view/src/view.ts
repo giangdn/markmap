@@ -1,6 +1,6 @@
 import type * as d3 from 'd3';
 import {
-  linkHorizontal,
+  // linkHorizontal,
   max,
   min,
   minIndex,
@@ -36,7 +36,7 @@ const SELECTOR_NODE = 'g.markmap-node';
 const SELECTOR_LINK = 'path.markmap-link';
 const SELECTOR_HIGHLIGHT = 'g.markmap-highlight';
 
-const linkShape = linkHorizontal();
+// const linkShape = linkHorizontal();
 
 function minBy(numbers: number[], by: (v: number) => number): number {
   const index = minIndex(numbers, by);
@@ -195,8 +195,6 @@ export class Markmap {
         .join('.');
       color(item); // preload colors
 
-      console.log(color(item), item);
-
       const isFoldRecursively = item.payload?.fold === 2;
       if (isFoldRecursively) {
         foldRecursively += 1;
@@ -330,6 +328,23 @@ export class Markmap {
       if (parent) parentMap[item.state.id] = parent.state.id;
       nodes.push(item);
     });
+
+    const smoothLinkShape = (d: {
+      source: [number, number];
+      target: [number, number];
+    }): string => {
+      const [x1, y1] = d.source;
+      const [x2, y2] = d.target;
+
+      // Adjust the control point distance (0.5 = default, lower = tighter, higher = smoother)
+      const curveFactor = 0.6; // Increase for smoother curves
+
+      const dx = x2 - x1;
+      const cx1 = x1 + dx * curveFactor;
+      const cx2 = x2 - dx * curveFactor;
+
+      return `M${x1},${y1} C${cx1},${y1} ${cx2},${y2} ${x2},${y2}`;
+    };
 
     const originMap: Record<number, number> = {};
     const sourceRectMap: Record<
@@ -497,7 +512,7 @@ export class Markmap {
           originRect.x + originRect.width,
           originRect.y + originRect.height,
         ];
-        return linkShape({ source: pathOrigin, target: pathOrigin });
+        return smoothLinkShape({ source: pathOrigin, target: pathOrigin });
       })
       .attr('stroke-width', 0);
     const mmPathMerge = mmPathEnter.merge(mmPath);
@@ -579,7 +594,7 @@ export class Markmap {
           targetRect.x + targetRect.width,
           targetRect.y + targetRect.height + lineWidth(d.target) / 2,
         ];
-        return linkShape({ source: pathTarget, target: pathTarget });
+        return smoothLinkShape({ source: pathTarget, target: pathTarget });
       })
       .attr('stroke-width', 0)
       .remove();
@@ -602,7 +617,7 @@ export class Markmap {
             origTarget.state.rect.height +
             lineWidth(origTarget) / 2,
         ];
-        return linkShape({ source, target });
+        return smoothLinkShape({ source, target });
       });
 
     if (autoFit) this.fit();
