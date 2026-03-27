@@ -604,7 +604,7 @@ class at {
       (E = r.payload) != null && E.fold || g(), c[r.state.id] = r, f && (l[r.state.id] = f.state.id), d.push(r);
     });
     const p = (r) => {
-      const [g, f] = r.source, [E, R] = r.target, V = 0.8, Y = E - g, pt = g + Y * V, mt = E - Y * V;
+      const [g, f] = r.source, [E, R] = r.target, V = 0.6, Y = E - g, pt = g + Y * V, mt = E - Y * V;
       return `M${g},${f} C${pt},${f} ${mt},${R} ${E},${R}`;
     }, m = {}, u = {}, x = (r) => {
       !r || m[r.state.id] || X(r, (g, f) => {

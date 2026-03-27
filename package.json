@@ -5,6 +5,39 @@
   "engines": {
     "node": ">=22"
   },
+  "exports": {
+    ".": {
+      "import": "./packages/markmap-view/dist/index.mjs",
+      "require": "./packages/markmap-view/dist/index.js",
+      "types": "./packages/markmap-view/dist/index.d.ts"
+    },
+    "./view": {
+      "import": "./packages/markmap-view/dist/index.mjs",
+      "require": "./packages/markmap-view/dist/index.js",
+      "types": "./packages/markmap-view/dist/index.d.ts"
+    },
+    "./lib": {
+      "import": "./packages/markmap-lib/dist/index.mjs",
+      "require": "./packages/markmap-lib/dist/index.js",
+      "types": "./packages/markmap-lib/dist/index.d.ts"
+    },
+    "./toolbar": {
+      "import": "./packages/markmap-toolbar/dist/index.mjs",
+      "require": "./packages/markmap-toolbar/dist/index.js",
+      "types": "./packages/markmap-toolbar/dist/index.d.ts"
+    },
+    "./toolbar/style.css": "./packages/markmap-toolbar/dist/style.css",
+    "./common": {
+      "import": "./packages/markmap-common/dist/index.mjs",
+      "require": "./packages/markmap-common/dist/index.js",
+      "types": "./packages/markmap-common/dist/index.d.ts"
+    },
+    "./html-parser": {
+      "import": "./packages/markmap-html-parser/dist/index.mjs",
+      "require": "./packages/markmap-html-parser/dist/index.js",
+      "types": "./packages/markmap-html-parser/dist/index.d.ts"
+    }
+  },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
     "@gera2ld/jsx-dom": "^2.2.2",

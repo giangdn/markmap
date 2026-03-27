@@ -1160,7 +1160,7 @@
       const smoothLinkShape = (d) => {
         const [x1, y1] = d.source;
         const [x2, y2] = d.target;
-        const curveFactor = 0.8;
+        const curveFactor = 0.6;
         const dx = x2 - x1;
         const cx1 = x1 + dx * curveFactor;
         const cx2 = x2 - dx * curveFactor;
