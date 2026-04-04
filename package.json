@@ -63,15 +63,16 @@
       "types": "./packages/markmap-autoloader/dist/index.d.ts"
     },
     "./hljs": {
-      "import": "highlight.js",
-      "require": "highlight.js"
+      "import": "./packages/markmap-lib/dist/hljs-shim.mjs",
+      "require": "./packages/markmap-lib/dist/hljs-shim.js"
     },
     "./katex": {
-      "import": "katex",
-      "require": "katex"
+      "import": "./node_modules/katex/dist/katex.mjs",
+      "require": "./node_modules/katex/dist/katex.js",
+      "types": "./node_modules/katex/dist/katex.d.ts"
     },
-    "./katex/style.css": "katex/dist/katex.min.css",
-    "./hljs/style.css": "highlight.js/styles/default.css",
+    "./katex/style.css": "./node_modules/katex/dist/katex.min.css",
+    "./hljs/style.css": "./node_modules/highlight.js/styles/default.css",
     "./plugins": {
       "import": "./packages/markmap-lib/dist/plugins-loader.mjs",
       "require": "./packages/markmap-lib/dist/plugins-loader.js",
