@@ -442,6 +442,12 @@ export class Markmap {
       .on('mousedown', stopPropagation)
       .on('dblclick', stopPropagation);
     mmFoEnter
+      .append<HTMLBodyElement>('xhtml:body') // The body element for download on ios
+      .attr('xmlns', 'http://www.w3.org/1999/xhtml')
+      .attr(
+        'style',
+        'margin:0;padding:0;background:transparent;width:100%;height:100%;overflow:visible;',
+      )
       .append<HTMLDivElement>('xhtml:div') // The outer `<div>` with a width of `maxWidth`
       .attr('xmlns', 'http://www.w3.org/1999/xhtml')
       .attr('style', (d) => '--node-color:' + color(d))
