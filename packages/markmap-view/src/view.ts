@@ -435,19 +435,20 @@ export class Markmap {
       .enter()
       .append('foreignObject')
       .attr('class', 'markmap-foreign')
+      .attr('xmlns', 'http://www.w3.org/1999/xhtml')
       .attr('x', paddingX)
       .attr('y', 0)
       .style('opacity', 0)
       .on('mousedown', stopPropagation)
       .on('dblclick', stopPropagation);
     mmFoEnter
-      // The outer `<div>` with a width of `maxWidth`
-      .append<HTMLDivElement>('xhtml:div')
+      .append<HTMLDivElement>('xhtml:div') // The outer `<div>` with a width of `maxWidth`
+      .attr('xmlns', 'http://www.w3.org/1999/xhtml')
       .attr('style', (d) => '--node-color:' + color(d))
-      // The inner `<div>` with `display: inline-block` to get the proper width
-      .append<HTMLDivElement>('xhtml:div')
-      .html((d) => d.content)
-      .attr('xmlns', 'http://www.w3.org/1999/xhtml');
+      .append<HTMLDivElement>('xhtml:div') // background control
+      .append<HTMLDivElement>('xhtml:div') // The inner `<div>` with `display: inline-block` to get the proper width
+      .style('display', 'inline-block')
+      .html((d) => d.content);
     mmFoEnter.each(function () {
       const el = this.firstChild?.firstChild as Element;
       observer.observe(el);

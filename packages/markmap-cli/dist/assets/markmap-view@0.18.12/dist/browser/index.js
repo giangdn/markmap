@@ -1212,8 +1212,8 @@
         (d) => [d],
         (d) => d.state.key
       );
-      const mmFoEnter = mmFo.enter().append("foreignObject").attr("class", "markmap-foreign").attr("x", paddingX).attr("y", 0).style("opacity", 0).on("mousedown", stopPropagation).on("dblclick", stopPropagation);
-      mmFoEnter.append("xhtml:div").attr("style", (d) => "--node-color:" + color(d)).append("xhtml:div").html((d) => d.content).attr("xmlns", "http://www.w3.org/1999/xhtml");
+      const mmFoEnter = mmFo.enter().append("foreignObject").attr("class", "markmap-foreign").attr("xmlns", "http://www.w3.org/1999/xhtml").attr("x", paddingX).attr("y", 0).style("opacity", 0).on("mousedown", stopPropagation).on("dblclick", stopPropagation);
+      mmFoEnter.append("xhtml:div").attr("xmlns", "http://www.w3.org/1999/xhtml").attr("style", (d) => "--node-color:" + color(d)).append("xhtml:div").append("xhtml:div").style("display", "inline-block").html((d) => d.content);
       mmFoEnter.each(function() {
         var _a;
         const el = (_a = this.firstChild) == null ? void 0 : _a.firstChild;
