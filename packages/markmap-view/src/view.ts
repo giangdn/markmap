@@ -444,10 +444,13 @@ export class Markmap {
     mmFoEnter
       .append<HTMLDivElement>('xhtml:div') // The outer `<div>` with a width of `maxWidth`
       .attr('xmlns', 'http://www.w3.org/1999/xhtml')
+      .attr('class', 'mfo-outer')
       .attr('style', (d) => '--node-color:' + color(d))
       .append<HTMLDivElement>('xhtml:div') // background control
       .attr('xmlns', 'http://www.w3.org/1999/xhtml')
+      .attr('class', 'mfo-bg')
       .append<HTMLDivElement>('xhtml:div') // The inner `<div>` with `display: inline-block` to get the proper width
+      .attr('class', 'mfo-inner')
       .style('display', 'inline-block')
       .html((d) => d.content);
     mmFoEnter.each(function () {
