@@ -434,7 +434,7 @@ export class Markmap {
     const mmFoEnter = mmFo
       .enter()
       .append('foreignObject')
-      .attr('class', 'markmap-foreign')
+      .attr('class', (d) => 'markmap-foreign markmap-foreign-' + d.state.id)
       .attr('xmlns', 'http://www.w3.org/1999/xhtml')
       .attr('x', paddingX)
       .attr('y', 0)

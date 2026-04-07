@@ -2970,7 +2970,7 @@ class An {
     ), Q = P.enter().append("line").attr("stroke", (h) => i(h)).attr("stroke-width", 0), j = P.merge(Q), tt = this._observer, vt = I.selectAll(D("foreignObject")).data(
       (h) => [h],
       (h) => h.state.key
-    ), lt = vt.enter().append("foreignObject").attr("class", "markmap-foreign").attr("xmlns", "http://www.w3.org/1999/xhtml").attr("x", n).attr("y", 0).style("opacity", 0).on("mousedown", Ut).on("dblclick", Ut);
+    ), lt = vt.enter().append("foreignObject").attr("class", (h) => "markmap-foreign markmap-foreign-" + h.state.id).attr("xmlns", "http://www.w3.org/1999/xhtml").attr("x", n).attr("y", 0).style("opacity", 0).on("mousedown", Ut).on("dblclick", Ut);
     lt.append("xhtml:div").attr("xmlns", "http://www.w3.org/1999/xhtml").attr("class", "mfo-outer").attr("style", (h) => "--node-color:" + i(h)).append("xhtml:div").attr("xmlns", "http://www.w3.org/1999/xhtml").attr("class", "mfo-bg").append("xhtml:div").attr("class", "mfo-inner").style("display", "inline-block").html((h) => h.content), lt.each(function() {
       var y;
       const h = (y = this.firstChild) == null ? void 0 : y.firstChild;
