@@ -99,7 +99,7 @@ function Yn(t) {
 const Wn = {
   isSvg: !1
 };
-function ve(t, e) {
+function we(t, e) {
   Array.isArray(e) || (e = [e]), e = e.filter(Boolean), e.length && t.append(...e);
 }
 function Gn(t, e, n) {
@@ -146,7 +146,7 @@ function se(t, e = Wn) {
       const o = document.createDocumentFragment();
       if (r.children) {
         const s = Zt(r.children, e);
-        ve(o, s);
+        we(o, s);
       }
       return o;
     }
@@ -169,7 +169,7 @@ function se(t, e = Wn) {
         isSvg: !1
       }));
       const a = Zt(i.children, s);
-      a != null && ve(n, a);
+      a != null && we(n, a);
     }
     const {
       ref: o
@@ -192,11 +192,11 @@ const Qn = On((t) => {
       href: t
     })
   );
-}), we = {}, _e = {};
+}), ve = {}, _e = {};
 async function jn(t, e) {
   var r;
   const n = t.type === "script" && ((r = t.data) == null ? void 0 : r.src) || "";
-  if (t.loaded || (t.loaded = we[n]), !t.loaded) {
+  if (t.loaded || (t.loaded = ve[n]), !t.loaded) {
     const i = We();
     if (t.loaded = i.promise, t.type === "script" && (document.head.append(
       Tt("script", {
@@ -204,7 +204,7 @@ async function jn(t, e) {
         onLoad: () => i.resolve(),
         onError: i.reject
       })
-    ), n ? we[n] = t.loaded : i.resolve()), t.type === "iife") {
+    ), n ? ve[n] = t.loaded : i.resolve()), t.type === "iife") {
       const { fn: o, getParams: s } = t.data;
       o(...(s == null ? void 0 : s(e)) || []), i.resolve();
     }
@@ -231,7 +231,7 @@ async function tr(t) {
   }
   await t.loaded;
 }
-async function va(t, e) {
+async function wa(t, e) {
   t.forEach((n) => {
     var r;
     n.type === "script" && ((r = n.data) != null && r.src) && Qn(n.data.src);
@@ -242,7 +242,7 @@ async function va(t, e) {
   for (const n of t)
     await jn(n, e);
 }
-async function wa(t) {
+async function va(t) {
   await Promise.all(t.map((e) => tr(e)));
 }
 class be extends Map {
@@ -455,16 +455,16 @@ function yr(t) {
 function xr() {
   return this.firstElementChild;
 }
-function vr(t) {
+function wr(t) {
   return this.select(t == null ? xr : yr(typeof t == "function" ? t : Qe(t)));
 }
-var wr = Array.prototype.filter;
+var vr = Array.prototype.filter;
 function _r() {
   return Array.from(this.children);
 }
 function br(t) {
   return function() {
-    return wr.call(this.children, t);
+    return vr.call(this.children, t);
   };
 }
 function kr(t) {
@@ -782,11 +782,11 @@ function yi() {
 function xi() {
   return this.each(yi);
 }
-function vi() {
+function wi() {
   this.previousSibling && this.parentNode.insertBefore(this, this.parentNode.firstChild);
 }
-function wi() {
-  return this.each(vi);
+function vi() {
+  return this.each(wi);
 }
 function _i(t) {
   var e = typeof t == "function" ? t : Ue(t);
@@ -909,7 +909,7 @@ H.prototype = xt.prototype = {
   constructor: H,
   select: hr,
   selectAll: gr,
-  selectChild: vr,
+  selectChild: wr,
   selectChildren: kr,
   filter: Er,
   data: $r,
@@ -933,7 +933,7 @@ H.prototype = xt.prototype = {
   text: fi,
   html: mi,
   raise: xi,
-  lower: wi,
+  lower: vi,
   append: _i,
   insert: ki,
   remove: Si,
@@ -987,7 +987,7 @@ function cn(t, e) {
   for (var r in e) n[r] = e[r];
   return n;
 }
-function vt() {
+function wt() {
 }
 var pt = 0.7, Xt = 1 / pt, st = "\\s*([+-]?\\d+)\\s*", gt = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", q = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", Vi = /^#([0-9a-f]{3,8})$/, qi = new RegExp(`^rgb\\(${st},${st},${st}\\)$`), Yi = new RegExp(`^rgb\\(${q},${q},${q}\\)$`), Wi = new RegExp(`^rgba\\(${st},${st},${st},${gt}\\)$`), Gi = new RegExp(`^rgba\\(${q},${q},${q},${gt}\\)$`), Ki = new RegExp(`^hsl\\(${gt},${q},${q}\\)$`), Ui = new RegExp(`^hsla\\(${gt},${q},${q},${gt}\\)$`), Ne = {
   aliceblue: 15792383,
@@ -1139,7 +1139,7 @@ var pt = 0.7, Xt = 1 / pt, st = "\\s*([+-]?\\d+)\\s*", gt = "\\s*([+-]?(?:\\d*\\
   yellow: 16776960,
   yellowgreen: 10145074
 };
-ue(vt, mt, {
+ue(wt, mt, {
   copy(t) {
     return Object.assign(new this.constructor(), this, t);
   },
@@ -1177,7 +1177,7 @@ function Et(t, e, n, r) {
   return r <= 0 && (t = e = n = NaN), new O(t, e, n, r);
 }
 function Qi(t) {
-  return t instanceof vt || (t = mt(t)), t ? (t = t.rgb(), new O(t.r, t.g, t.b, t.opacity)) : new O();
+  return t instanceof wt || (t = mt(t)), t ? (t = t.rgb(), new O(t.r, t.g, t.b, t.opacity)) : new O();
 }
 function te(t, e, n, r) {
   return arguments.length === 1 ? Qi(t) : new O(t, e, n, r ?? 1);
@@ -1185,7 +1185,7 @@ function te(t, e, n, r) {
 function O(t, e, n, r) {
   this.r = +t, this.g = +e, this.b = +n, this.opacity = +r;
 }
-ue(O, te, cn(vt, {
+ue(O, te, cn(wt, {
   brighter(t) {
     return t = t == null ? Xt : Math.pow(Xt, t), new O(this.r * t, this.g * t, this.b * t, this.opacity);
   },
@@ -1232,7 +1232,7 @@ function Xe(t, e, n, r) {
 }
 function ln(t) {
   if (t instanceof B) return new B(t.h, t.s, t.l, t.opacity);
-  if (t instanceof vt || (t = mt(t)), !t) return new B();
+  if (t instanceof wt || (t = mt(t)), !t) return new B();
   if (t instanceof B) return t;
   t = t.rgb();
   var e = t.r / 255, n = t.g / 255, r = t.b / 255, i = Math.min(e, n, r), o = Math.max(e, n, r), s = NaN, a = o - i, c = (o + i) / 2;
@@ -1244,7 +1244,7 @@ function to(t, e, n, r) {
 function B(t, e, n, r) {
   this.h = +t, this.s = +e, this.l = +n, this.opacity = +r;
 }
-ue(B, to, cn(vt, {
+ue(B, to, cn(wt, {
   brighter(t) {
     return t = t == null ? Xt : Math.pow(Xt, t), new B(this.h, this.s, this.l * t, this.opacity);
   },
@@ -1468,14 +1468,14 @@ function He() {
   try {
     yo();
   } finally {
-    ct = 0, vo(), it = 0;
+    ct = 0, wo(), it = 0;
   }
 }
 function xo() {
   var t = yt.now(), e = t - Ft;
   e > pn && (Pt -= e, Ft = t);
 }
-function vo() {
+function wo() {
   for (var t, e = Ot, n, r = 1 / 0; e; )
     e._call ? (r > e._time && (r = e._time), t = e, e = e._next) : (n = e._next, e._next = null, e = t ? t._next = n : Ot = n);
   dt = t, re(r);
@@ -1493,7 +1493,7 @@ function Le(t, e, n) {
     r.stop(), t(i + e);
   }, e, n), r;
 }
-var wo = ae("start", "end", "cancel", "interrupt"), _o = [], yn = 0, Pe = 1, ie = 2, At = 3, Be = 4, oe = 5, $t = 6;
+var vo = ae("start", "end", "cancel", "interrupt"), _o = [], yn = 0, Pe = 1, ie = 2, At = 3, Be = 4, oe = 5, $t = 6;
 function Bt(t, e, n, r, i, o) {
   var s = t.__transition;
   if (!s) t.__transition = {};
@@ -1504,7 +1504,7 @@ function Bt(t, e, n, r, i, o) {
     // For context during callback.
     group: i,
     // For context during callback.
-    on: wo,
+    on: vo,
     tween: _o,
     time: o.time,
     delay: o.delay,
@@ -1835,7 +1835,7 @@ function ss(t, e) {
     return o === s ? null : o === n && s === r ? i : i = e(n = o, r = s);
   };
 }
-function vn(t) {
+function wn(t) {
   return function() {
     this.style.removeProperty(t);
   };
@@ -1857,13 +1857,13 @@ function cs(t, e, n) {
 function ls(t, e) {
   var n, r, i, o = "style." + e, s = "end." + o, a;
   return function() {
-    var c = Y(this, t), l = c.on, u = c.value[o] == null ? a || (a = vn(e)) : void 0;
+    var c = Y(this, t), l = c.on, u = c.value[o] == null ? a || (a = wn(e)) : void 0;
     (l !== n || i !== u) && (r = (n = l).copy()).on(s, i = u), c.on = r;
   };
 }
 function us(t, e, n) {
   var r = (t += "") == "transform" ? lo : xn;
-  return e == null ? this.styleTween(t, ss(t, r)).on("end.style." + t, vn(t)) : typeof e == "function" ? this.styleTween(t, cs(t, r, de(this, "style." + t, e))).each(ls(this._id, t)) : this.styleTween(t, as(t, r, e), n).on("end.style." + t, null);
+  return e == null ? this.styleTween(t, ss(t, r)).on("end.style." + t, wn(t)) : typeof e == "function" ? this.styleTween(t, cs(t, r, de(this, "style." + t, e))).each(ls(this._id, t)) : this.styleTween(t, as(t, r, e), n).on("end.style." + t, null);
 }
 function hs(t, e, n) {
   return function(r) {
@@ -1912,15 +1912,15 @@ function xs(t) {
   }
   return r._value = t, r;
 }
-function vs(t) {
+function ws(t) {
   var e = "text";
   if (arguments.length < 1) return (e = this.tween(e)) && e._value;
   if (t == null) return this.tween(e, null);
   if (typeof t != "function") throw new Error();
   return this.tween(e, xs(t));
 }
-function ws() {
-  for (var t = this._name, e = this._id, n = wn(), r = this._groups, i = r.length, o = 0; o < i; ++o)
+function vs() {
+  for (var t = this._name, e = this._id, n = vn(), r = this._groups, i = r.length, o = 0; o < i; ++o)
     for (var s = r[o], a = s.length, c, l = 0; l < a; ++l)
       if (c = s[l]) {
         var u = V(c, e);
@@ -1949,7 +1949,7 @@ var bs = 0;
 function K(t, e, n, r) {
   this._groups = t, this._parents = e, this._name = n, this._id = r;
 }
-function wn() {
+function vn() {
   return ++bs;
 }
 var W = xt.prototype;
@@ -1962,7 +1962,7 @@ K.prototype = {
   filter: Uo,
   merge: Zo,
   selection: os,
-  transition: ws,
+  transition: vs,
   call: W.call,
   nodes: W.nodes,
   node: W.node,
@@ -1975,7 +1975,7 @@ K.prototype = {
   style: us,
   styleTween: ds,
   text: ms,
-  textTween: vs,
+  textTween: ws,
   remove: es,
   tween: zo,
   delay: Po,
@@ -2003,7 +2003,7 @@ function Ss(t, e) {
 }
 function zs(t) {
   var e, n;
-  t instanceof K ? (e = t._id, t = t._name) : (e = wn(), (n = Es).time = he(), t = t == null ? null : t + "");
+  t instanceof K ? (e = t._id, t = t._name) : (e = vn(), (n = Es).time = he(), t = t == null ? null : t + "");
   for (var r = this._groups, i = r.length, o = 0; o < i; ++o)
     for (var s = r[o], a = s.length, c, l = 0; l < a; ++l)
       (c = s[l]) && Bt(c, t, e, l, s, n || Ss(c, e));
@@ -2145,56 +2145,56 @@ function Is(t, e, n) {
 function Os() {
   var t = Ms, e = Ts, n = Is, r = Rs, i = Xs, o = [0, 1 / 0], s = [[-1 / 0, -1 / 0], [1 / 0, 1 / 0]], a = 250, c = go, l = ae("start", "zoom", "end"), u, d, p, m = 500, _ = 150, k = 0, C = 10;
   function x(f) {
-    f.property("__zoom", qe).on("wheel.zoom", Q, { passive: !1 }).on("mousedown.zoom", j).on("dblclick.zoom", tt).filter(i).on("touchstart.zoom", wt).on("touchmove.zoom", lt).on("touchend.zoom touchcancel.zoom", _t).style("-webkit-tap-highlight-color", "rgba(0,0,0,0)");
+    f.property("__zoom", qe).on("wheel.zoom", Q, { passive: !1 }).on("mousedown.zoom", j).on("dblclick.zoom", tt).filter(i).on("touchstart.zoom", vt).on("touchmove.zoom", lt).on("touchend.zoom touchcancel.zoom", _t).style("-webkit-tap-highlight-color", "rgba(0,0,0,0)");
   }
-  x.transform = function(f, v, g, w) {
+  x.transform = function(f, w, g, v) {
     var b = f.selection ? f.selection() : f;
-    b.property("__zoom", qe), f !== b ? X(f, v, g, w) : b.interrupt().each(function() {
-      I(this, arguments).event(w).start().zoom(null, typeof v == "function" ? v.apply(this, arguments) : v).end();
+    b.property("__zoom", qe), f !== b ? X(f, w, g, v) : b.interrupt().each(function() {
+      I(this, arguments).event(v).start().zoom(null, typeof w == "function" ? w.apply(this, arguments) : w).end();
     });
-  }, x.scaleBy = function(f, v, g, w) {
+  }, x.scaleBy = function(f, w, g, v) {
     x.scaleTo(f, function() {
-      var b = this.__zoom.k, E = typeof v == "function" ? v.apply(this, arguments) : v;
+      var b = this.__zoom.k, E = typeof w == "function" ? w.apply(this, arguments) : w;
       return b * E;
-    }, g, w);
-  }, x.scaleTo = function(f, v, g, w) {
+    }, g, v);
+  }, x.scaleTo = function(f, w, g, v) {
     x.transform(f, function() {
-      var b = e.apply(this, arguments), E = this.__zoom, S = g == null ? F(b) : typeof g == "function" ? g.apply(this, arguments) : g, N = E.invert(S), A = typeof v == "function" ? v.apply(this, arguments) : v;
+      var b = e.apply(this, arguments), E = this.__zoom, S = g == null ? F(b) : typeof g == "function" ? g.apply(this, arguments) : g, N = E.invert(S), A = typeof w == "function" ? w.apply(this, arguments) : w;
       return n(R($(E, A), S, N), b, s);
-    }, g, w);
-  }, x.translateBy = function(f, v, g, w) {
+    }, g, v);
+  }, x.translateBy = function(f, w, g, v) {
     x.transform(f, function() {
       return n(this.__zoom.translate(
-        typeof v == "function" ? v.apply(this, arguments) : v,
+        typeof w == "function" ? w.apply(this, arguments) : w,
         typeof g == "function" ? g.apply(this, arguments) : g
       ), e.apply(this, arguments), s);
-    }, null, w);
-  }, x.translateTo = function(f, v, g, w, b) {
+    }, null, v);
+  }, x.translateTo = function(f, w, g, v, b) {
     x.transform(f, function() {
-      var E = e.apply(this, arguments), S = this.__zoom, N = w == null ? F(E) : typeof w == "function" ? w.apply(this, arguments) : w;
+      var E = e.apply(this, arguments), S = this.__zoom, N = v == null ? F(E) : typeof v == "function" ? v.apply(this, arguments) : v;
       return n(Vt.translate(N[0], N[1]).scale(S.k).translate(
-        typeof v == "function" ? -v.apply(this, arguments) : -v,
+        typeof w == "function" ? -w.apply(this, arguments) : -w,
         typeof g == "function" ? -g.apply(this, arguments) : -g
       ), E, s);
-    }, w, b);
+    }, v, b);
   };
-  function $(f, v) {
-    return v = Math.max(o[0], Math.min(o[1], v)), v === f.k ? f : new G(v, f.x, f.y);
+  function $(f, w) {
+    return w = Math.max(o[0], Math.min(o[1], w)), w === f.k ? f : new G(w, f.x, f.y);
   }
-  function R(f, v, g) {
-    var w = v[0] - g[0] * f.k, b = v[1] - g[1] * f.k;
-    return w === f.x && b === f.y ? f : new G(f.k, w, b);
+  function R(f, w, g) {
+    var v = w[0] - g[0] * f.k, b = w[1] - g[1] * f.k;
+    return v === f.x && b === f.y ? f : new G(f.k, v, b);
   }
   function F(f) {
     return [(+f[0][0] + +f[1][0]) / 2, (+f[0][1] + +f[1][1]) / 2];
   }
-  function X(f, v, g, w) {
+  function X(f, w, g, v) {
     f.on("start.zoom", function() {
-      I(this, arguments).event(w).start();
+      I(this, arguments).event(v).start();
     }).on("interrupt.zoom end.zoom", function() {
-      I(this, arguments).event(w).end();
+      I(this, arguments).event(v).end();
     }).tween("zoom", function() {
-      var b = this, E = arguments, S = I(b, E).event(w), N = e.apply(b, E), A = g == null ? F(N) : typeof g == "function" ? g.apply(b, E) : g, L = Math.max(N[1][0] - N[0][0], N[1][1] - N[0][1]), T = b.__zoom, h = typeof v == "function" ? v.apply(b, E) : v, y = c(T.invert(A).concat(L / T.k), h.invert(A).concat(L / h.k));
+      var b = this, E = arguments, S = I(b, E).event(v), N = e.apply(b, E), A = g == null ? F(N) : typeof g == "function" ? g.apply(b, E) : g, L = Math.max(N[1][0] - N[0][0], N[1][1] - N[0][1]), T = b.__zoom, h = typeof w == "function" ? w.apply(b, E) : w, y = c(T.invert(A).concat(L / T.k), h.invert(A).concat(L / h.k));
       return function(z) {
         if (z === 1) z = h;
         else {
@@ -2205,11 +2205,11 @@ function Os() {
       };
     });
   }
-  function I(f, v, g) {
-    return !g && f.__zooming || new P(f, v);
+  function I(f, w, g) {
+    return !g && f.__zooming || new P(f, w);
   }
-  function P(f, v) {
-    this.that = f, this.args = v, this.active = 0, this.sourceEvent = null, this.extent = e.apply(f, v), this.taps = 0;
+  function P(f, w) {
+    this.that = f, this.args = w, this.active = 0, this.sourceEvent = null, this.extent = e.apply(f, w), this.taps = 0;
   }
   P.prototype = {
     event: function(f) {
@@ -2218,14 +2218,14 @@ function Os() {
     start: function() {
       return ++this.active === 1 && (this.that.__zooming = this, this.emit("start")), this;
     },
-    zoom: function(f, v) {
-      return this.mouse && f !== "mouse" && (this.mouse[1] = v.invert(this.mouse[0])), this.touch0 && f !== "touch" && (this.touch0[1] = v.invert(this.touch0[0])), this.touch1 && f !== "touch" && (this.touch1[1] = v.invert(this.touch1[0])), this.that.__zoom = v, this.emit("zoom"), this;
+    zoom: function(f, w) {
+      return this.mouse && f !== "mouse" && (this.mouse[1] = w.invert(this.mouse[0])), this.touch0 && f !== "touch" && (this.touch0[1] = w.invert(this.touch0[0])), this.touch1 && f !== "touch" && (this.touch1[1] = w.invert(this.touch1[0])), this.that.__zoom = w, this.emit("zoom"), this;
     },
     end: function() {
       return --this.active === 0 && (delete this.that.__zooming, this.emit("end")), this;
     },
     emit: function(f) {
-      var v = J(this.that).datum();
+      var w = J(this.that).datum();
       l.call(
         f,
         this.that,
@@ -2235,60 +2235,60 @@ function Os() {
           transform: this.that.__zoom,
           dispatch: l
         }),
-        v
+        w
       );
     }
   };
-  function Q(f, ...v) {
+  function Q(f, ...w) {
     if (!t.apply(this, arguments)) return;
-    var g = I(this, v).event(f), w = this.__zoom, b = Math.max(o[0], Math.min(o[1], w.k * Math.pow(2, r.apply(this, arguments)))), E = et(f);
+    var g = I(this, w).event(f), v = this.__zoom, b = Math.max(o[0], Math.min(o[1], v.k * Math.pow(2, r.apply(this, arguments)))), E = et(f);
     if (g.wheel)
-      (g.mouse[0][0] !== E[0] || g.mouse[0][1] !== E[1]) && (g.mouse[1] = w.invert(g.mouse[0] = E)), clearTimeout(g.wheel);
+      (g.mouse[0][0] !== E[0] || g.mouse[0][1] !== E[1]) && (g.mouse[1] = v.invert(g.mouse[0] = E)), clearTimeout(g.wheel);
     else {
-      if (w.k === b) return;
-      g.mouse = [E, w.invert(E)], Mt(this), g.start();
+      if (v.k === b) return;
+      g.mouse = [E, v.invert(E)], Mt(this), g.start();
     }
-    ht(f), g.wheel = setTimeout(S, _), g.zoom("mouse", n(R($(w, b), g.mouse[0], g.mouse[1]), g.extent, s));
+    ht(f), g.wheel = setTimeout(S, _), g.zoom("mouse", n(R($(v, b), g.mouse[0], g.mouse[1]), g.extent, s));
     function S() {
       g.wheel = null, g.end();
     }
   }
-  function j(f, ...v) {
+  function j(f, ...w) {
     if (p || !t.apply(this, arguments)) return;
-    var g = f.currentTarget, w = I(this, v, !0).event(f), b = J(f.view).on("mousemove.zoom", A, !0).on("mouseup.zoom", L, !0), E = et(f, g), S = f.clientX, N = f.clientY;
-    Pi(f.view), Gt(f), w.mouse = [E, this.__zoom.invert(E)], Mt(this), w.start();
+    var g = f.currentTarget, v = I(this, w, !0).event(f), b = J(f.view).on("mousemove.zoom", A, !0).on("mouseup.zoom", L, !0), E = et(f, g), S = f.clientX, N = f.clientY;
+    Pi(f.view), Gt(f), v.mouse = [E, this.__zoom.invert(E)], Mt(this), v.start();
     function A(T) {
-      if (ht(T), !w.moved) {
+      if (ht(T), !v.moved) {
         var h = T.clientX - S, y = T.clientY - N;
-        w.moved = h * h + y * y > k;
+        v.moved = h * h + y * y > k;
       }
-      w.event(T).zoom("mouse", n(R(w.that.__zoom, w.mouse[0] = et(T, g), w.mouse[1]), w.extent, s));
+      v.event(T).zoom("mouse", n(R(v.that.__zoom, v.mouse[0] = et(T, g), v.mouse[1]), v.extent, s));
     }
     function L(T) {
-      b.on("mousemove.zoom mouseup.zoom", null), Bi(T.view, w.moved), ht(T), w.event(T).end();
+      b.on("mousemove.zoom mouseup.zoom", null), Bi(T.view, v.moved), ht(T), v.event(T).end();
     }
   }
-  function tt(f, ...v) {
+  function tt(f, ...w) {
     if (t.apply(this, arguments)) {
-      var g = this.__zoom, w = et(f.changedTouches ? f.changedTouches[0] : f, this), b = g.invert(w), E = g.k * (f.shiftKey ? 0.5 : 2), S = n(R($(g, E), w, b), e.apply(this, v), s);
-      ht(f), a > 0 ? J(this).transition().duration(a).call(X, S, w, f) : J(this).call(x.transform, S, w, f);
+      var g = this.__zoom, v = et(f.changedTouches ? f.changedTouches[0] : f, this), b = g.invert(v), E = g.k * (f.shiftKey ? 0.5 : 2), S = n(R($(g, E), v, b), e.apply(this, w), s);
+      ht(f), a > 0 ? J(this).transition().duration(a).call(X, S, v, f) : J(this).call(x.transform, S, v, f);
     }
   }
-  function wt(f, ...v) {
+  function vt(f, ...w) {
     if (t.apply(this, arguments)) {
-      var g = f.touches, w = g.length, b = I(this, v, f.changedTouches.length === w).event(f), E, S, N, A;
-      for (Gt(f), S = 0; S < w; ++S)
+      var g = f.touches, v = g.length, b = I(this, w, f.changedTouches.length === v).event(f), E, S, N, A;
+      for (Gt(f), S = 0; S < v; ++S)
         N = g[S], A = et(N, this), A = [A, this.__zoom.invert(A), N.identifier], b.touch0 ? !b.touch1 && b.touch0[2] !== A[2] && (b.touch1 = A, b.taps = 0) : (b.touch0 = A, E = !0, b.taps = 1 + !!u);
       u && (u = clearTimeout(u)), E && (b.taps < 2 && (d = A[0], u = setTimeout(function() {
         u = null;
       }, m)), Mt(this), b.start());
     }
   }
-  function lt(f, ...v) {
+  function lt(f, ...w) {
     if (this.__zooming) {
-      var g = I(this, v).event(f), w = f.changedTouches, b = w.length, E, S, N, A;
+      var g = I(this, w).event(f), v = f.changedTouches, b = v.length, E, S, N, A;
       for (ht(f), E = 0; E < b; ++E)
-        S = w[E], N = et(S, this), g.touch0 && g.touch0[2] === S.identifier ? g.touch0[0] = N : g.touch1 && g.touch1[2] === S.identifier && (g.touch1[0] = N);
+        S = v[E], N = et(S, this), g.touch0 && g.touch0[2] === S.identifier ? g.touch0[0] = N : g.touch1 && g.touch1[2] === S.identifier && (g.touch1[0] = N);
       if (S = g.that.__zoom, g.touch1) {
         var L = g.touch0[0], T = g.touch0[1], h = g.touch1[0], y = g.touch1[1], z = (z = h[0] - L[0]) * z + (z = h[1] - L[1]) * z, M = (M = y[0] - T[0]) * M + (M = y[1] - T[1]) * M;
         S = $(S, Math.sqrt(z / M)), N = [(L[0] + h[0]) / 2, (L[1] + h[1]) / 2], A = [(T[0] + y[0]) / 2, (T[1] + y[1]) / 2];
@@ -2297,13 +2297,13 @@ function Os() {
       g.zoom("touch", n(R(S, N, A), g.extent, s));
     }
   }
-  function _t(f, ...v) {
+  function _t(f, ...w) {
     if (this.__zooming) {
-      var g = I(this, v).event(f), w = f.changedTouches, b = w.length, E, S;
+      var g = I(this, w).event(f), v = f.changedTouches, b = v.length, E, S;
       for (Gt(f), p && clearTimeout(p), p = setTimeout(function() {
         p = null;
       }, m), E = 0; E < b; ++E)
-        S = w[E], g.touch0 && g.touch0[2] === S.identifier ? delete g.touch0 : g.touch1 && g.touch1[2] === S.identifier && delete g.touch1;
+        S = v[E], g.touch0 && g.touch0[2] === S.identifier ? delete g.touch0 : g.touch1 && g.touch1[2] === S.identifier && delete g.touch1;
       if (g.touch1 && !g.touch0 && (g.touch0 = g.touch1, delete g.touch1), g.touch0) g.touch0[1] = this.__zoom.invert(g.touch0[0]);
       else if (g.end(), g.taps === 2 && (S = et(S, this), Math.hypot(d[0] - S[0], d[1] - S[1]) < C)) {
         var N = J(this).on("dblclick.zoom");
@@ -2967,11 +2967,11 @@ class An {
     ), P = I.selectAll(D("line")).data(
       (h) => [h],
       (h) => h.state.key
-    ), Q = P.enter().append("line").attr("stroke", (h) => i(h)).attr("stroke-width", 0), j = P.merge(Q), tt = this._observer, wt = I.selectAll(D("foreignObject")).data(
+    ), Q = P.enter().append("line").attr("stroke", (h) => i(h)).attr("stroke-width", 0), j = P.merge(Q), tt = this._observer, vt = I.selectAll(D("foreignObject")).data(
       (h) => [h],
       (h) => h.state.key
-    ), lt = wt.enter().append("foreignObject").attr("class", "markmap-foreign").attr("xmlns", "http://www.w3.org/1999/xhtml").attr("x", n).attr("y", 0).style("opacity", 0).on("mousedown", Ut).on("dblclick", Ut);
-    lt.append("xhtml:div").attr("xmlns", "http://www.w3.org/1999/xhtml").attr("style", (h) => "--node-color:" + i(h)).append("xhtml:div").append("xhtml:div").style("display", "inline-block").html((h) => h.content), lt.each(function() {
+    ), lt = vt.enter().append("foreignObject").attr("class", "markmap-foreign").attr("xmlns", "http://www.w3.org/1999/xhtml").attr("x", n).attr("y", 0).style("opacity", 0).on("mousedown", Ut).on("dblclick", Ut);
+    lt.append("xhtml:div").attr("xmlns", "http://www.w3.org/1999/xhtml").attr("style", (h) => "--node-color:" + i(h)).append("xhtml:div").attr("xmlns", "http://www.w3.org/1999/xhtml").append("xhtml:div").style("display", "inline-block").html((h) => h.content), lt.each(function() {
       var y;
       const h = (y = this.firstChild) == null ? void 0 : y.firstChild;
       tt.observe(h);
@@ -2984,13 +2984,13 @@ class An {
       const h = (y = this.firstChild) == null ? void 0 : y.firstChild;
       tt.unobserve(h);
     });
-    const f = lt.merge(wt), v = I.selectAll(D("circle")).data(
+    const f = lt.merge(vt), w = I.selectAll(D("circle")).data(
       (h) => {
         var y;
         return (y = h.children) != null && y.length ? [h] : [];
       },
       (h) => h.state.key
-    ), w = v.enter().append("circle").attr("stroke-width", 0).attr("r", 0).on("click", (h, y) => this.handleClick(h, y)).on("mousedown", Ut).merge(v).attr("stroke", (h) => i(h)).attr(
+    ), v = w.enter().append("circle").attr("stroke-width", 0).attr("r", 0).on("click", (h, y) => this.handleClick(h, y)).on("mousedown", Ut).merge(w).attr("stroke", (h) => i(h)).attr(
       "fill",
       (h) => {
         var y;
@@ -3028,7 +3028,7 @@ class An {
     const T = X.selectAll(
       D("circle")
     );
-    this.transition(T).attr("r", 0).attr("stroke-width", 0), w.attr("cx", (h) => h.state.rect.width).attr("cy", (h) => h.state.rect.height + s(h) / 2), this.transition(w).attr("r", 5).attr("stroke-width", "1"), this.transition(_t).style("opacity", 0), f.attr("width", (h) => Math.max(0, h.state.rect.width - n * 2)).attr("height", (h) => h.state.rect.height), this.transition(f).style("opacity", 1), this.transition(S).attr("d", (h) => {
+    this.transition(T).attr("r", 0).attr("stroke-width", 0), v.attr("cx", (h) => h.state.rect.width).attr("cy", (h) => h.state.rect.height + s(h) / 2), this.transition(v).attr("r", 5).attr("stroke-width", "1"), this.transition(_t).style("opacity", 0), f.attr("width", (h) => Math.max(0, h.state.rect.width - n * 2)).attr("height", (h) => h.state.rect.height), this.transition(f).style("opacity", 1), this.transition(S).attr("d", (h) => {
       const y = C(h.target), z = [
         y.x + y.width,
         y.y + y.height + s(h.target) / 2
@@ -3144,8 +3144,8 @@ export {
   ba as globalCSS,
   _n as isMacintosh,
   bn as lineWidthFactory,
-  wa as loadCSS,
-  va as loadJS,
+  va as loadCSS,
+  wa as loadJS,
   xa as refreshHook,
   Ds as simpleHash
 };

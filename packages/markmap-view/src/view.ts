@@ -446,6 +446,7 @@ export class Markmap {
       .attr('xmlns', 'http://www.w3.org/1999/xhtml')
       .attr('style', (d) => '--node-color:' + color(d))
       .append<HTMLDivElement>('xhtml:div') // background control
+      .attr('xmlns', 'http://www.w3.org/1999/xhtml')
       .append<HTMLDivElement>('xhtml:div') // The inner `<div>` with `display: inline-block` to get the proper width
       .style('display', 'inline-block')
       .html((d) => d.content);
